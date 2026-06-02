@@ -1,0 +1,116 @@
+# Dependencies
+
+node_modules/
+
+# Build Outputs
+
+dist/
+build/
+.next/
+out/
+coverage/
+.nyc_output/
+
+# Turborepo
+
+.turbo/
+
+# TypeScript
+
+*.tsbuildinfo
+
+# Environment Files
+
+.env
+.env.*
+!.env.example
+
+# Logs
+
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime Data
+
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary Files
+
+.temp/
+.tmp/
+
+# OS Files
+
+.DS_Store
+Thumbs.db
+
+# IDE - VSCode
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - JetBrains
+
+.idea/
+
+# Other IDEs
+
+.project
+.classpath
+.settings/
+.c9/
+*.launch
+*.sublime-workspace
+
+# Diagnostic Reports
+
+report.*.json
+
+# Next.js
+
+next-env.d.ts
+
+# Vercel
+
+.vercel/
+
+# pnpm
+
+.pnpm-store/
+
+# Yarn (if ever used)
+
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Docker
+
+docker-data/
+postgres-data/
+redis-data/
+
+# Sentry
+
+.sentryclirc
+
+# Local SSL Certificates
+
+*.pem
+*.key
+*.crt
