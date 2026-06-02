@@ -1,3 +1,5 @@
+name: ai-outreach-platform
+
 services:
   redis:
     image: redis/redis-stack:7.4.0-v8
