@@ -5,6 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:packages": "turbo run dev --filter=./packages/*",
+    "dev:web": "turbo run dev --filter=./apps/web",
+    "dev:api": "turbo run dev --filter=./apps/api",
+    "dev:worker": "turbo run dev --filter=./apps/worker",
     "build": "turbo run build"
   },
   "keywords": [],

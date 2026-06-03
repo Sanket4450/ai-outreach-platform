@@ -12,7 +12,8 @@
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "drizzle-orm": "^0.45.2",
-    "postgres": "^3.4.9"
+    "postgres": "^3.4.9",
+    "@repo/shared": "workspace:*"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10"
