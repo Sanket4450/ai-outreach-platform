@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-const webEnvSchema = z.object({
-  NODE_ENV: z.enum(['dev', 'test', 'prod']),
+export const webEnvSchema = z.object({
+  NEXT_PUBLIC_API_URL: z.string().min(1),
 });
 
 export type WebEnv = z.infer<typeof webEnvSchema>;

@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { env } from '@repo/shared';
+import { env } from './config/env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  console.log(env)
+  const port = env.PORT;
 
-  await app.listen(8000, () => {
-    console.log('API is running on PORT:', 8000);
+  await app.listen(port, () => {
+    console.log('API is running on PORT:', port);
   });
 }
 bootstrap();
