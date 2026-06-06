@@ -1,3 +1,4 @@
+export const WORKSPACE_ROLES = ['owner', 'member'] as const;
 export const THREAD_STATUSES = ['waiting_reply', 'needs_action', 'closed'] as const;
 export const MESSAGE_DIRECTIONS = ['inbound', 'outbound'] as const;
 export const MESSAGE_STATUSES = ['scheduled', 'queued', 'sent', 'failed'] as const;
@@ -11,6 +12,7 @@ export const WEBHOOK_EVENT_TYPES = [
   'spam_reported',
 ] as const;
 
+export type WorkspaceRole = (typeof WORKSPACE_ROLES)[number];
 export type ThreadStatus = (typeof THREAD_STATUSES)[number];
 export type MessageDirection = (typeof MESSAGE_DIRECTIONS)[number];
 export type MessageStatus = (typeof MESSAGE_STATUSES)[number];

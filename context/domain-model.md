@@ -31,6 +31,7 @@
 │ workspaceId   FK, Required      │
 │ userId        FK, Required      │
 │ role          Required          │
+│               (WORKSPACE_ROLES) │
 │ createdAt     Required          │
 │ updatedAt     Required          │
 │                                 │
@@ -283,6 +284,7 @@
 
 | Enum | Values |
 |------|--------|
+| WORKSPACE_ROLES | `owner`, `member` |
 | THREAD_STATUSES | `waiting_reply`, `needs_action`, `closed` |
 | MESSAGE_DIRECTIONS | `inbound`, `outbound` |
 | MESSAGE_STATUSES | `scheduled`, `queued`, `sent`, `failed` |
