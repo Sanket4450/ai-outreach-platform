@@ -1,8 +1,12 @@
 import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 import { MESSAGE_DIRECTIONS } from '@repo/shared';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
+import { workspaces } from './workspace';
+import { threads } from './thread';
+import { webhookEvents } from './webhook-event';
 
 export const messages = pgTable('messages', {
   ...idField,
@@ -35,5 +39,29 @@ export const messages = pgTable('messages', {
     withTimezone: true,
   }),
 
+  bouncedAt: timestamp('bounced_at', {
+    withTimezone: true,
+  }),
+
+  firstOpenedAt: timestamp('first_opened_at', {
+    withTimezone: true,
+  }),
+
+  firstClickedAt: timestamp('first_clicked_at', {
+    withTimezone: true,
+  }),
+
   ...timestampFields,
 });
+
+export const messagesRelations = relations(messages, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [messages.workspaceId],
+    references: [workspaces.id],
+  }),
+  thread: one(threads, {
+    fields: [messages.threadId],
+    references: [threads.id],
+  }),
+  webhookEvents: many(webhookEvents),
+}));

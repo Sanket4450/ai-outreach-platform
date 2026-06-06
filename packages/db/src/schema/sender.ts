@@ -1,7 +1,11 @@
 import { jsonb, pgTable, text } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
+import { workspaces } from './workspace';
+import { threads } from './thread';
+import { drafts } from './draft';
 
 export const senders = pgTable('senders', {
   ...idField,
@@ -18,3 +22,12 @@ export const senders = pgTable('senders', {
 
   ...timestampFields,
 });
+
+export const sendersRelations = relations(senders, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [senders.workspaceId],
+    references: [workspaces.id],
+  }),
+  threads: many(threads),
+  drafts: many(drafts),
+}));

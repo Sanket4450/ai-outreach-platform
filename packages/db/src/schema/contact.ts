@@ -1,8 +1,12 @@
 import { pgTable, text } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
 import { softDeleteFields } from './common/soft-delete';
+import { workspaces } from './workspace';
+import { threads } from './thread';
+import { drafts } from './draft';
 
 export const contacts = pgTable('contacts', {
   ...idField,
@@ -27,3 +31,12 @@ export const contacts = pgTable('contacts', {
 
   ...timestampFields,
 });
+
+export const contactsRelations = relations(contacts, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [contacts.workspaceId],
+    references: [workspaces.id],
+  }),
+  threads: many(threads),
+  drafts: many(drafts),
+}));

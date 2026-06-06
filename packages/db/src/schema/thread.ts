@@ -1,7 +1,13 @@
 import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
+import { workspaces } from './workspace';
+import { contacts } from './contact';
+import { senders } from './sender';
+import { messages } from './message';
+import { drafts } from './draft';
 
 export const threads = pgTable('threads', {
   ...idField,
@@ -20,3 +26,20 @@ export const threads = pgTable('threads', {
 
   ...timestampFields,
 });
+
+export const threadsRelations = relations(threads, ({ one, many }) => ({
+  workspace: one(workspaces, {
+    fields: [threads.workspaceId],
+    references: [workspaces.id],
+  }),
+  contact: one(contacts, {
+    fields: [threads.contactId],
+    references: [contacts.id],
+  }),
+  sender: one(senders, {
+    fields: [threads.senderId],
+    references: [senders.id],
+  }),
+  messages: many(messages),
+  drafts: many(drafts),
+}));
