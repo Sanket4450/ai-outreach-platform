@@ -1,4 +1,4 @@
-import { jsonb, pgTable, text } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, text, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
@@ -31,3 +31,10 @@ export const sendersRelations = relations(senders, ({ one, many }) => ({
   threads: many(threads),
   drafts: many(drafts),
 }));
+
+export const sendersWorkspaceIdIdx = index('senders_workspace_id_idx').on(senders.workspaceId);
+export const sendersWorkspaceIdProviderEmailUq = uniqueIndex('senders_workspace_id_provider_email_uq').on(
+  senders.workspaceId,
+  senders.provider,
+  senders.email,
+);

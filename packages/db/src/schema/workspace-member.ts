@@ -1,4 +1,4 @@
-import { pgTable, text } from 'drizzle-orm/pg-core';
+import { pgTable, text, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
@@ -28,3 +28,10 @@ export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) =
     references: [users.id],
   }),
 }));
+
+export const workspaceMembersWorkspaceIdIdx = index('workspace_members_workspace_id_idx').on(workspaceMembers.workspaceId);
+export const workspaceMembersUserIdIdx = index('workspace_members_user_id_idx').on(workspaceMembers.userId);
+export const workspaceMembersWorkspaceIdUserIdUq = uniqueIndex('workspace_members_workspace_id_user_id_uq').on(
+  workspaceMembers.workspaceId,
+  workspaceMembers.userId,
+);

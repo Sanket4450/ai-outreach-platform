@@ -1,4 +1,4 @@
-import { pgTable, text } from 'drizzle-orm/pg-core';
+import { pgTable, text, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
@@ -40,3 +40,6 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
   threads: many(threads),
   drafts: many(drafts),
 }));
+
+export const contactsWorkspaceIdIdx = index('contacts_workspace_id_idx').on(contacts.workspaceId);
+export const contactsWorkspaceIdEmailUq = uniqueIndex('contacts_workspace_id_email_uq').on(contacts.workspaceId, contacts.email);

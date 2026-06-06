@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { MESSAGE_DIRECTIONS } from '@repo/shared';
 
@@ -15,7 +15,7 @@ export const messages = pgTable('messages', {
 
   threadId: text('thread_id').notNull(),
 
-  providerMessageId: text('provider_message_id'),
+  providerMessageId: text('provider_message_id').unique(),
 
   direction: text('direction', {
     enum: MESSAGE_DIRECTIONS,
@@ -65,3 +65,7 @@ export const messagesRelations = relations(messages, ({ one, many }) => ({
   }),
   webhookEvents: many(webhookEvents),
 }));
+
+export const messagesThreadIdCreatedAtIdx = index('messages_thread_id_created_at_idx').on(messages.threadId, messages.createdAt);
+export const messagesStatusIdx = index('messages_status_idx').on(messages.status);
+export const messagesStatusScheduledForIdx = index('messages_status_scheduled_for_idx').on(messages.status, messages.scheduledFor);
