@@ -25,6 +25,7 @@ Complete the core domain layer and shared infrastructure before building out app
 ## Completed
 
 ### Monorepo Foundation
+
 - pnpm workspace with Turborepo configured
 - TypeScript base config (`tsconfig.base.json`)
 - ESLint config (`eslint.config.js`)
@@ -32,20 +33,21 @@ Complete the core domain layer and shared infrastructure before building out app
 - Turbo pipeline (`turbo.json`) with dev/build tasks
 
 ### Database Package (`@repo/db`)
+
 - Drizzle ORM setup with PostgreSQL (`drizzle-orm`, `drizzle-kit`)
 - Database client factory (`createDb`) using `node-postgres` Pool
 - Drizzle Kit config (`drizzle.config.ts`) pointing to `apps/api/.env` for DB_URL
 - All core domain tables defined as Drizzle schema:
 
-| Table | File | Key Columns |
-|-------|------|-------------|
-| `users` | `packages/db/src/schema/user.ts` | email (unique), passwordHash, firstName, lastName, isEmailVerified, softDelete, timestamps |
-| `workspaces` | `packages/db/src/schema/workspace.ts` | name, timestamps |
-| `workspace_members` | `packages/db/src/schema/workspace-member.ts` | workspaceId, userId, role, timestamps |
-| `senders` | `packages/db/src/schema/sender.ts` | workspaceId, name, email, provider, providerConfig (JSONB), timestamps |
-| `contacts` | `packages/db/src/schema/contact.ts` | workspaceId, email, firstName, lastName, company, title, linkedinUrl, notes, softDelete, timestamps |
-| `threads` | `packages/db/src/schema/thread.ts` | workspaceId, contactId, senderId, status, lastMessageAt, timestamps |
-| `messages` | `packages/db/src/schema/message.ts` | workspaceId, threadId, providerMessageId, direction (enum), status, subject, body, scheduledFor, sentAt, deliveredAt, timestamps |
+| Table               | File                                         | Key Columns                                                                                                                      |
+| ------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `users`             | `packages/db/src/schema/user.ts`             | email (unique), passwordHash, firstName, lastName, isEmailVerified, softDelete, timestamps                                       |
+| `workspaces`        | `packages/db/src/schema/workspace.ts`        | name, timestamps                                                                                                                 |
+| `workspace_members` | `packages/db/src/schema/workspace-member.ts` | workspaceId, userId, role, timestamps                                                                                            |
+| `senders`           | `packages/db/src/schema/sender.ts`           | workspaceId, name, email, provider, providerConfig (JSONB), timestamps                                                           |
+| `contacts`          | `packages/db/src/schema/contact.ts`          | workspaceId, email, firstName, lastName, company, title, linkedinUrl, notes, softDelete, timestamps                              |
+| `threads`           | `packages/db/src/schema/thread.ts`           | workspaceId, contactId, senderId, status, lastMessageAt, timestamps                                                              |
+| `messages`          | `packages/db/src/schema/message.ts`          | workspaceId, threadId, providerMessageId, direction (enum), status, subject, body, scheduledFor, sentAt, deliveredAt, timestamps |
 
 - Common schema helpers:
   - `id.ts` — text-based primary key (`id: text('id').primaryKey()`)
@@ -53,6 +55,7 @@ Complete the core domain layer and shared infrastructure before building out app
   - `soft-delete.ts` — nullable `deletedAt` timestamp for soft-delete pattern
 
 ### Shared Package (`@repo/shared`)
+
 - Domain enums:
   - `THREAD_STATUSES` — `['waiting_reply', 'needs_action', 'closed']`
   - `MESSAGE_DIRECTIONS` — `['inbound', 'outbound']`
@@ -62,6 +65,7 @@ Complete the core domain layer and shared infrastructure before building out app
 - Code follows code-standards: string literal unions (`as const`) over TypeScript enums
 
 ### API App (`@repo/api`) — NestJS
+
 - NestJS scaffolded with `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`
 - Basic `AppModule`, `AppController`, `AppService` (boilerplate only)
 - Environment config (`apps/api/src/config/env.ts`, `apps/api/src/config/db.ts`)
@@ -70,12 +74,14 @@ Complete the core domain layer and shared infrastructure before building out app
 - Logging: Pino via `nestjs-pino`
 
 ### Web App (`@repo/web`) — Next.js 16
+
 - Next.js 16 with React 19, Tailwind CSS v4
 - Basic `layout.tsx`, `page.tsx`, `globals.css` (boilerplate only)
 - Environment config (`apps/web/src/env.ts`)
 - Dependencies: `@repo/shared`
 
 ### Worker App (`worker`) — NestJS
+
 - NestJS scaffolded identically to API
 - Basic `AppModule`, `AppController`, `AppService` (boilerplate only)
 - Environment config (`apps/worker/config/env.ts`, `apps/worker/config/db.ts`)
@@ -83,11 +89,13 @@ Complete the core domain layer and shared infrastructure before building out app
 - Logging: Pino via `nestjs-pino`
 
 ### Infrastructure
+
 - Docker Compose (`infra/docker/compose.yml`)
 - Nginx configuration (`infra/nginx/`)
 - Scripts directory (`infra/scripts/`)
 
 ### Documentation
+
 - `context/project-overview.md` — Comprehensive overview with goals, user flow, domain model, features, scope, success criteria, design principles
 - `context/code-standards.md` — Detailed standards for TypeScript, naming, backend (controllers/services/repositories), API design, frontend (TanStack Query, Zustand), realtime events, queues, providers, logging, monorepo structure
 

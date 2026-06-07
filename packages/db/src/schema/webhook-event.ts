@@ -40,9 +40,12 @@ export const webhookEventsRelations = relations(webhookEvents, ({ one }) => ({
   }),
 }));
 
-export const webhookEventsMessageIdIdx = index('webhook_events_message_id_idx').on(webhookEvents.messageId);
-export const webhookEventsWorkspaceIdIdx = index('webhook_events_workspace_id_idx').on(webhookEvents.workspaceId);
-export const webhookEventsMessageIdOccurredAtIdx = index('webhook_events_message_id_occurred_at_idx').on(
+export const webhookEventsMessageIdIdx = index('webhook_events_message_id_idx').on(
   webhookEvents.messageId,
-  webhookEvents.occurredAt,
 );
+export const webhookEventsWorkspaceIdIdx = index('webhook_events_workspace_id_idx').on(
+  webhookEvents.workspaceId,
+);
+export const webhookEventsMessageIdOccurredAtIdx = index(
+  'webhook_events_message_id_occurred_at_idx',
+).on(webhookEvents.messageId, webhookEvents.occurredAt);

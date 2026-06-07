@@ -9,7 +9,10 @@
     "dev:web": "turbo run dev --filter=./apps/web",
     "dev:api": "turbo run dev --filter=./apps/api",
     "dev:worker": "turbo run dev --filter=./apps/worker",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "typecheck": "tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",

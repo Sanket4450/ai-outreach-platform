@@ -6,6 +6,7 @@ out
 coverage
 .nyc_output
 .turbo
+coverage
 
 pnpm-lock.yaml
 

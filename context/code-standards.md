@@ -25,9 +25,9 @@ kebab-case
 Use:
 
 ```ts
-threadId
-workspaceId
-lastMessageAt
+threadId;
+workspaceId;
+lastMessageAt;
 ```
 
 Convention:
@@ -41,9 +41,9 @@ camelCase
 Use:
 
 ```ts
-Thread
-Message
-CreateThreadInput
+Thread;
+Message;
+CreateThreadInput;
 ```
 
 Convention:
@@ -57,8 +57,8 @@ PascalCase
 Use:
 
 ```ts
-DEFAULT_PAGE_SIZE
-MAX_RETRY_COUNT
+DEFAULT_PAGE_SIZE;
+MAX_RETRY_COUNT;
 ```
 
 Convention:
@@ -73,22 +73,17 @@ UPPER_SNAKE_CASE
 
 ### Required
 
-* `strict: true`
-* No `any`
-* Prefer type inference where obvious
-* Prefer string literal unions over enums
+- `strict: true`
+- No `any`
+- Prefer type inference where obvious
+- Prefer string literal unions over enums
 
 Example:
 
 ```ts
-export const THREAD_STATUSES = [
-  'waiting_reply',
-  'needs_action',
-  'closed',
-] as const;
+export const THREAD_STATUSES = ['waiting_reply', 'needs_action', 'closed'] as const;
 
-export type ThreadStatus =
-  (typeof THREAD_STATUSES)[number];
+export type ThreadStatus = (typeof THREAD_STATUSES)[number];
 ```
 
 ---
@@ -117,6 +112,7 @@ ai-outreach-platform/
 ### Package Responsibilities
 
 #### `apps/api` — Backend API Server
+
 - Exposes REST endpoints consumed by the web frontend
 - Handles authentication, request validation, and response mapping
 - Delegates all business logic to services in appropriate packages
@@ -124,6 +120,7 @@ ai-outreach-platform/
 - **Not allowed:** raw database queries, direct provider calls
 
 #### `apps/web` — Frontend Application
+
 - Next.js application with server-side rendering
 - Renders UI and handles user interactions
 - Fetches data via TanStack Query hooks (server state)
@@ -132,12 +129,14 @@ ai-outreach-platform/
 - **Not allowed:** business logic, direct database access
 
 #### `apps/worker` — Background Job Processor
+
 - Processes BullMQ jobs (email sending, reply processing, tracking events, AI generation)
 - Every job must be idempotent, retryable, and safe for duplicate execution
 - **Allowed:** job handlers, queue definitions, worker bootstrap
 - **Not allowed:** HTTP endpoints, UI rendering
 
 #### `packages/shared` — Shared Domain Layer
+
 - Domain enums (`THREAD_STATUSES`, `MESSAGE_DIRECTIONS`, etc.)
 - TypeScript types for domain entities
 - Zod validation schemas
@@ -145,6 +144,7 @@ ai-outreach-platform/
 - **No business logic or side effects**
 
 #### `packages/db` — Database Layer
+
 - Drizzle ORM schema definitions for all tables
 - Migration files (generated and managed by Drizzle Kit)
 - Typed query helpers and repository building blocks
@@ -152,6 +152,7 @@ ai-outreach-platform/
 - **No business rules** — repositories in `apps/api` consume this package
 
 #### `packages/ai` — AI Integration Layer
+
 - Abstract interface for AI providers (OpenAI, etc.)
 - Prompt templates and generation utilities
 - Exposes `aiProvider.generate()` — the only entry point application code should call
@@ -159,6 +160,7 @@ ai-outreach-platform/
 - **Not allowed:** direct HTTP responses, database writes
 
 #### `packages/email` — Email Integration Layer
+
 - Abstract interface for email providers (SendGrid, etc.)
 - Exposes `emailProvider.send()` — the only entry point application code should call
 - Handles provider-specific configuration (API keys, webhook verification)
@@ -166,20 +168,24 @@ ai-outreach-platform/
 - **Not allowed:** direct provider SDK calls from application code
 
 #### `packages/types` — Utility Types
+
 - Generic TypeScript utility types (e.g., `DeepPartial`, `PaginatedResult`)
 - Type guards and assertion functions
 - Shared type helpers used across multiple packages
 - **No runtime code or domain logic**
 
 #### `infra/docker` — Local Development Environment
+
 - Docker Compose configuration for PostgreSQL, Redis, and other services
 - Used for consistent local development across the team
 
 #### `infra/nginx` — Reverse Proxy
+
 - Nginx configuration for production deployments
 - Routes traffic to the appropriate app (api, web)
 
 #### `context/` — Project Documentation
+
 - Domain model diagrams and entity relationships
 - Code standards (this file)
 - Project overview, goals, and design principles
@@ -202,9 +208,7 @@ logger.info({
 Avoid:
 
 ```ts
-logger.info(
-  `Thread ${threadId} updated`
-);
+logger.info(`Thread ${threadId} updated`);
 ```
 
 - Always pass structured objects, never string templates
@@ -220,18 +224,19 @@ Application code accesses providers through abstractions.
 Allowed:
 
 ```ts
-emailProvider.send()
-aiProvider.generate()
+emailProvider.send();
+aiProvider.generate();
 ```
 
 Not allowed outside integration layer:
 
 ```ts
-sendgrid.send()
-openai.responses.create()
+sendgrid.send();
+openai.responses.create();
 ```
 
 Every provider must:
+
 - Be accessed through a single abstraction interface
 - Support swapping implementations without changing application code
 - Be configured per workspace where relevant (e.g., sender-level provider config)
@@ -244,32 +249,32 @@ Every provider must:
 
 Allowed:
 
-* request validation
-* authentication
-* service calls
-* response mapping
+- request validation
+- authentication
+- service calls
+- response mapping
 
 Not allowed:
 
-* business logic
-* database queries
+- business logic
+- database queries
 
 ### Services
 
 Contains:
 
-* business rules
-* orchestration
-* transaction boundaries
+- business rules
+- orchestration
+- transaction boundaries
 
 ### Repositories
 
 Contains:
 
-* selects
-* inserts
-* updates
-* deletes
+- selects
+- inserts
+- updates
+- deletes
 
 No business rules.
 
@@ -319,9 +324,9 @@ Avoid:
 
 Validate:
 
-* body
-* params
-* query
+- body
+- params
+- query
 
 before service execution.
 
@@ -386,9 +391,9 @@ Data fetching belongs in hooks.
 
 Every BullMQ job must:
 
-* be idempotent
-* support retries
-* support duplicate execution
+- be idempotent
+- support retries
+- support duplicate execution
 
 Job names:
 

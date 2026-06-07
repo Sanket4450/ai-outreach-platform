@@ -4,20 +4,20 @@
 
 This document defines the complete end-to-end flow for:
 
-* User registration
-* Email verification
-* User login
-* Workspace creation
-* Workspace selection
-* Workspace invitations
-* Invitation acceptance
+- User registration
+- Email verification
+- User login
+- Workspace creation
+- Workspace selection
+- Workspace invitations
+- Invitation acceptance
 
 This document is the source of truth for:
 
-* Backend implementation
-* Frontend implementation
-* API design
-* Authorization behavior
+- Backend implementation
+- Frontend implementation
+- API design
+- Authorization behavior
 
 ---
 
@@ -1008,10 +1008,10 @@ Flow:
 
 Can:
 
-* Manage workspace
-* Invite members
-* View members
-* Remove members
+- Manage workspace
+- Invite members
+- View members
+- Remove members
 
 ---
 
@@ -1019,17 +1019,17 @@ Can:
 
 Can:
 
-* Manage contacts
-* Manage senders
-* Manage drafts
-* Manage threads
-* Manage messages
+- Manage contacts
+- Manage senders
+- Manage drafts
+- Manage threads
+- Manage messages
 
 Cannot:
 
-* Invite members
-* Remove members
-* Manage workspace
+- Invite members
+- Remove members
+- Manage workspace
 
 ---
 

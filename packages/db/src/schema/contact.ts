@@ -42,4 +42,7 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
 }));
 
 export const contactsWorkspaceIdIdx = index('contacts_workspace_id_idx').on(contacts.workspaceId);
-export const contactsWorkspaceIdEmailUq = uniqueIndex('contacts_workspace_id_email_uq').on(contacts.workspaceId, contacts.email);
+export const contactsWorkspaceIdEmailUq = uniqueIndex('contacts_workspace_id_email_uq').on(
+  contacts.workspaceId,
+  contacts.email,
+);

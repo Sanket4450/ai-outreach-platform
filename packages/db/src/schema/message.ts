@@ -66,6 +66,12 @@ export const messagesRelations = relations(messages, ({ one, many }) => ({
   webhookEvents: many(webhookEvents),
 }));
 
-export const messagesThreadIdCreatedAtIdx = index('messages_thread_id_created_at_idx').on(messages.threadId, messages.createdAt);
+export const messagesThreadIdCreatedAtIdx = index('messages_thread_id_created_at_idx').on(
+  messages.threadId,
+  messages.createdAt,
+);
 export const messagesStatusIdx = index('messages_status_idx').on(messages.status);
-export const messagesStatusScheduledForIdx = index('messages_status_scheduled_for_idx').on(messages.status, messages.scheduledFor);
+export const messagesStatusScheduledForIdx = index('messages_status_scheduled_for_idx').on(
+  messages.status,
+  messages.scheduledFor,
+);

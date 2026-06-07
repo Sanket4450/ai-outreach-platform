@@ -33,8 +33,6 @@ export const sendersRelations = relations(senders, ({ one, many }) => ({
 }));
 
 export const sendersWorkspaceIdIdx = index('senders_workspace_id_idx').on(senders.workspaceId);
-export const sendersWorkspaceIdProviderEmailUq = uniqueIndex('senders_workspace_id_provider_email_uq').on(
-  senders.workspaceId,
-  senders.provider,
-  senders.email,
-);
+export const sendersWorkspaceIdProviderEmailUq = uniqueIndex(
+  'senders_workspace_id_provider_email_uq',
+).on(senders.workspaceId, senders.provider, senders.email);

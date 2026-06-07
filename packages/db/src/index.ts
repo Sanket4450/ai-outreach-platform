@@ -9,3 +9,4 @@ export * from './schema/message';
 export * from './schema/draft';
 export * from './schema/webhook-event';
 export * from './schema/workspace-invitation';
+export * from './schema/email-verification';

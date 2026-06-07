@@ -49,12 +49,12 @@ A workspace represents an isolated account.
 
 All business data belongs to a workspace, including:
 
-* Members
-* Senders
-* Contacts
-* Threads
-* Messages
-* Settings
+- Members
+- Senders
+- Contacts
+- Threads
+- Messages
+- Settings
 
 ### Sender
 
@@ -62,9 +62,9 @@ A sender represents an email identity capable of sending emails.
 
 Examples:
 
-* [john@company.com](mailto:john@company.com)
-* [sales@company.com](mailto:sales@company.com)
-* [founders@startup.com](mailto:founders@startup.com)
+- [john@company.com](mailto:john@company.com)
+- [sales@company.com](mailto:sales@company.com)
+- [founders@startup.com](mailto:founders@startup.com)
 
 A sender is associated with an email provider configuration and is used for outbound communication.
 
@@ -74,8 +74,8 @@ A contact represents a recipient.
 
 Examples:
 
-* John Smith
-* [jane@acme.com](mailto:jane@acme.com)
+- John Smith
+- [jane@acme.com](mailto:jane@acme.com)
 
 Contacts store recipient information and serve as the primary participant in conversations.
 
@@ -85,10 +85,10 @@ A thread represents a conversation between a sender and a contact.
 
 A thread contains:
 
-* Initial outreach emails
-* Follow-up emails
-* Recipient replies
-* Future responses
+- Initial outreach emails
+- Follow-up emails
+- Recipient replies
+- Future responses
 
 Threads are the central entity of the application.
 
@@ -98,8 +98,8 @@ A message represents a single email.
 
 Messages may be:
 
-* Outbound
-* Inbound
+- Outbound
+- Inbound
 
 Every message belongs to a thread.
 
@@ -109,74 +109,74 @@ Every message belongs to a thread.
 
 ### Authentication & Access
 
-* User registration
-* User login
-* Session management
-* Password reset
-* Workspace membership
+- User registration
+- User login
+- Session management
+- Password reset
+- Workspace membership
 
 ### Workspace Management
 
-* Workspace creation
-* Member invitations
-* Role management
-* Workspace settings
+- Workspace creation
+- Member invitations
+- Role management
+- Workspace settings
 
 ### Sender Management
 
-* Create sender identities
-* Validate provider credentials
-* Enable or disable senders
-* Manage sending accounts
+- Create sender identities
+- Validate provider credentials
+- Enable or disable senders
+- Manage sending accounts
 
 ### Contact Management
 
-* Create contacts
-* Update contacts
-* Search contacts
-* Auto-create contacts from outbound communication
+- Create contacts
+- Update contacts
+- Search contacts
+- Auto-create contacts from outbound communication
 
 ### Email Composition
 
-* Manual email creation
-* AI-generated email drafts
-* AI rewriting
-* AI follow-up suggestions
+- Manual email creation
+- AI-generated email drafts
+- AI rewriting
+- AI follow-up suggestions
 
 ### Email Delivery
 
-* Immediate sending
-* Scheduled sending
-* Provider integration
-* Delivery status tracking
+- Immediate sending
+- Scheduled sending
+- Provider integration
+- Delivery status tracking
 
 ### Conversation Management
 
-* Automatic thread creation
-* Unified conversation history
-* Reply association
-* Thread status management
+- Automatic thread creation
+- Unified conversation history
+- Reply association
+- Thread status management
 
 ### Engagement Tracking
 
-* Delivery tracking
-* Open tracking
-* Click tracking
-* Bounce tracking
-* Activity timeline
+- Delivery tracking
+- Open tracking
+- Click tracking
+- Bounce tracking
+- Activity timeline
 
 ### Reply Processing
 
-* Inbound reply detection
-* Thread matching
-* Follow-up cancellation when replies are received
+- Inbound reply detection
+- Thread matching
+- Follow-up cancellation when replies are received
 
 ### Notifications
 
-* Reply notifications
-* Delivery notifications
-* Tracking event notifications
-* Real-time updates
+- Reply notifications
+- Delivery notifications
+- Tracking event notifications
+- Real-time updates
 
 ---
 
@@ -184,32 +184,32 @@ Every message belongs to a thread.
 
 ### In Scope
 
-* Email outreach
-* One-to-one conversations
-* Shared workspaces
-* Sender account management
-* Contact management
-* AI-assisted writing
-* Email scheduling
-* Email tracking
-* Reply handling
-* Conversation management
-* Real-time notifications
+- Email outreach
+- One-to-one conversations
+- Shared workspaces
+- Sender account management
+- Contact management
+- AI-assisted writing
+- Email scheduling
+- Email tracking
+- Reply handling
+- Conversation management
+- Real-time notifications
 
 ### Out of Scope
 
-* CRM pipelines
-* Opportunity management
-* Lead scoring
-* Contact enrichment
-* Marketing campaigns
-* Bulk newsletter distribution
-* Landing pages
-* Forms
-* SMS communication
-* WhatsApp communication
-* LinkedIn messaging
-* Automated sales sequences
+- CRM pipelines
+- Opportunity management
+- Lead scoring
+- Contact enrichment
+- Marketing campaigns
+- Bulk newsletter distribution
+- Landing pages
+- Forms
+- SMS communication
+- WhatsApp communication
+- LinkedIn messaging
+- Automated sales sequences
 
 ---
 

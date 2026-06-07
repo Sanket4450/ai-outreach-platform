@@ -44,8 +44,10 @@ export const threadsRelations = relations(threads, ({ one, many }) => ({
   drafts: many(drafts),
 }));
 
-export const threadsWorkspaceIdLastMessageAtIdx = index('threads_workspace_id_last_message_at_idx').on(
+export const threadsWorkspaceIdLastMessageAtIdx = index(
+  'threads_workspace_id_last_message_at_idx',
+).on(threads.workspaceId, threads.lastMessageAt);
+export const threadsWorkspaceIdStatusIdx = index('threads_workspace_id_status_idx').on(
   threads.workspaceId,
-  threads.lastMessageAt,
+  threads.status,
 );
-export const threadsWorkspaceIdStatusIdx = index('threads_workspace_id_status_idx').on(threads.workspaceId, threads.status);

@@ -39,8 +39,9 @@ export const workspaceInvitationsRelations = relations(workspaceInvitations, ({ 
   }),
 }));
 
-export const workspaceInvitationsTokenIdx = uniqueIndex('workspace_invitations_token_idx').on(workspaceInvitations.token);
-export const workspaceInvitationsWorkspaceIdEmailIdx = index('workspace_invitations_workspace_id_email_idx').on(
-  workspaceInvitations.workspaceId,
-  workspaceInvitations.email,
+export const workspaceInvitationsTokenIdx = uniqueIndex('workspace_invitations_token_idx').on(
+  workspaceInvitations.token,
 );
+export const workspaceInvitationsWorkspaceIdEmailIdx = index(
+  'workspace_invitations_workspace_id_email_idx',
+).on(workspaceInvitations.workspaceId, workspaceInvitations.email);
