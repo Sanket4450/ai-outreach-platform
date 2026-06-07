@@ -13,7 +13,7 @@
 │ id            PK                │
 │ email         Unique, Required  │
 │ passwordHash  Required          │
-│ firstName                       │
+│ firstName     Required          │
 │ lastName                        │
 │ isEmailVerified  Required       │
 │                Default false    │
@@ -37,6 +37,13 @@
 │                                 │
 │ Unique (workspaceId, userId)    │
 └─────────────────────────────────┘
+       │
+       │ 1───* (has many)
+       ▼
+┌─────────────────────────────────┐
+│     workspace_invitations       │
+│     (as createdBy → FK)         │
+└─────────────────────────────────┘
 ```
 
 ---
@@ -57,6 +64,12 @@
        ▼
 ┌─────────────────────────────────┐
 │       workspace_members         │
+└─────────────────────────────────┘
+       │
+       │ 1───* (has many)
+       ▼
+┌─────────────────────────────────┐
+│     workspace_invitations       │
 └─────────────────────────────────┘
        │
        │ 1───* (has many)
@@ -106,6 +119,7 @@
 ├───────────────────────────────────┤
 │ id            PK                  │
 │ workspaceId   FK, Required        │
+│               ON DELETE CASCADE   │
 │ email         Required            │
 │ firstName                         │
 │ lastName                          │
@@ -124,12 +138,14 @@
        ▼
 ┌─────────────────────────────────┐
 │            threads              │
+│     ON DELETE RESTRICT          │
 └─────────────────────────────────┘
        │
        │ 1───* (has many)
        ▼
 ┌─────────────────────────────────┐
 │            drafts               │
+│     ON DELETE CASCADE           │
 └─────────────────────────────────┘
 ```
 
@@ -143,6 +159,7 @@
 ├──────────────────────────────────┤
 │ id              PK               │
 │ workspaceId     FK, Required     │
+│                 ON DELETE CASCADE│
 │ name            Required         │
 │ email           Required         │
 │ provider        Required         │
@@ -158,12 +175,14 @@
        ▼
 ┌─────────────────────────────────┐
 │            threads              │
+│     ON DELETE RESTRICT          │
 └─────────────────────────────────┘
        │
        │ 1───* (has many)
        ▼
 ┌─────────────────────────────────┐
 │            drafts               │
+│     ON DELETE RESTRICT          │
 └─────────────────────────────────┘
 ```
 
@@ -177,8 +196,11 @@
 ├───────────────────────────────────┤
 │ id              PK                │
 │ workspaceId     FK, Required      │
+│                 ON DELETE CASCADE │
 │ contactId       FK, Required      │
+│                 ON DELETE RESTRICT│
 │ senderId        FK, Required      │
+│                 ON DELETE RESTRICT│
 │ status          Required          │
 │                 (THREAD_STATUSES) │
 │ lastMessageAt                     │
@@ -190,12 +212,15 @@
        ▼
 ┌─────────────────────────────────┐
 │           messages              │
+│     ON DELETE CASCADE           │
 └─────────────────────────────────┘
        │
        │ 1───* (has many)
        ▼
 ┌─────────────────────────────────┐
 │            drafts               │
+│     ON DELETE SET NULL          │
+│     (threadId becomes null)     │
 └─────────────────────────────────┘
 ```
 
@@ -209,12 +234,18 @@
 ├────────────────────────────────────┤
 │ id                 PK              │
 │ workspaceId        FK, Required    │
+│                    ON DELETE CASCADE│
 │ threadId           FK, Required    │
+│                    ON DELETE CASCADE│
 │ providerMessageId  Unique          │
 │ direction          Required        │
 │                    (MESSAGE_       │
 │                     DIRECTIONS)    │
 │ status             Required        │
+│ fromEmail          Required        │
+│ toEmail            Required        │
+│ fromName                           │
+│ toName                             │
 │ subject            Required        │
 │ body               Required        │
 │ scheduledFor                       │
@@ -223,6 +254,7 @@
 │ bouncedAt                          │
 │ firstOpenedAt                      │
 │ firstClickedAt                     │
+│ deletedAt          (soft delete)   │
 │ createdAt          Required        │
 │ updatedAt          Required        │
 └────────────────────────────────────┘
@@ -231,6 +263,7 @@
        ▼
 ┌─────────────────────────────────┐
 │        webhook_events           │
+│     ON DELETE CASCADE           │
 └─────────────────────────────────┘
 ```
 
@@ -244,9 +277,13 @@
 ├───────────────────────────────────┤
 │ id            PK                  │
 │ workspaceId   FK, Required        │
+│               ON DELETE CASCADE   │
 │ threadId      FK (nullable)       │
+│               ON DELETE SET NULL  │
 │ senderId      FK, Required        │
+│               ON DELETE RESTRICT  │
 │ contactId     FK, Required        │
+│               ON DELETE CASCADE   │
 │ subject       Required            │
 │               Default ''          │
 │ body          Required            │
@@ -266,7 +303,9 @@
 ├───────────────────────────────────┤
 │ id            PK                  │
 │ workspaceId   FK, Required        │
+│               ON DELETE CASCADE   │
 │ messageId     FK, Required        │
+│               ON DELETE CASCADE   │
 │ provider      Required            │
 │ eventType     Required            │
 │               (WEBHOOK_EVENT_     │
@@ -276,6 +315,61 @@
 │ createdAt     Required            │
 │ updatedAt     Required            │
 └───────────────────────────────────┘
+```
+
+---
+
+### Email Verifications
+
+```
+┌───────────────────────────────────┐
+│       email_verifications         │
+├───────────────────────────────────┤
+│ id            PK                  │
+│ email         Required            │
+│ otp           Required            │
+│ expiresAt     Required            │
+│ createdAt     Required            │
+│ updatedAt     Required            │
+└───────────────────────────────────┘
+```
+
+> **Note:** This table is standalone with no foreign key relationships to other entities. Rows are typically short-lived and cleaned up after verification or expiry.
+
+---
+
+### Workspace Invitations
+
+```
+┌───────────────────────────────────┐
+│      workspace_invitations        │
+├───────────────────────────────────┤
+│ id            PK                  │
+│ workspaceId   FK, Required        │
+│               ON DELETE CASCADE   │
+│ email         Required            │
+│ token         Unique, Required    │
+│ expiresAt     Required            │
+│ acceptedAt                        │
+│ createdBy     FK, Required        │
+│               (users.id)          │
+│               ON DELETE RESTRICT  │
+│ createdAt     Required            │
+│ updatedAt     Required            │
+└───────────────────────────────────┘
+       │
+       │ *───1 (belongs to)
+       ▼
+┌─────────────────────────────────┐
+│           workspaces            │
+└─────────────────────────────────┘
+       │
+       │ *───1 (belongs to)
+       ▼
+┌─────────────────────────────────┐
+│             users               │
+│     (via createdBy FK)          │
+└─────────────────────────────────┘
 ```
 
 ---
@@ -296,44 +390,49 @@
 
 ## Relationships Summary
 
-| From              | To                | Type   |
-| ----------------- | ----------------- | ------ |
-| users             | workspace_members | 1 → \* |
-| workspaces        | workspace_members | 1 → \* |
-| workspaces        | contacts          | 1 → \* |
-| workspaces        | senders           | 1 → \* |
-| workspaces        | threads           | 1 → \* |
-| workspaces        | messages          | 1 → \* |
-| workspaces        | drafts            | 1 → \* |
-| workspaces        | webhook_events    | 1 → \* |
-| workspace_members | users             | \* → 1 |
-| workspace_members | workspaces        | \* → 1 |
-| contacts          | threads           | 1 → \* |
-| contacts          | drafts            | 1 → \* |
-| senders           | threads           | 1 → \* |
-| senders           | drafts            | 1 → \* |
-| threads           | messages          | 1 → \* |
-| threads           | drafts            | 1 → \* |
-| messages          | webhook_events    | 1 → \* |
+| From                  | To                   | Type   | ON DELETE                    |
+| --------------------- | -------------------- | ------ | ---------------------------- |
+| users                 | workspace_members    | 1 → \* | CASCADE (via userId FK)      |
+| users                 | workspace_invitations| 1 → \* | RESTRICT (via createdBy FK)  |
+| workspaces            | workspace_members    | 1 → \* | CASCADE                      |
+| workspaces            | workspace_invitations| 1 → \* | CASCADE                      |
+| workspaces            | contacts             | 1 → \* | CASCADE                      |
+| workspaces            | senders              | 1 → \* | CASCADE                      |
+| workspaces            | threads              | 1 → \* | CASCADE                      |
+| workspaces            | messages             | 1 → \* | CASCADE                      |
+| workspaces            | drafts               | 1 → \* | CASCADE                      |
+| workspaces            | webhook_events       | 1 → \* | CASCADE                      |
+| workspace_members     | users                | \* → 1 | —                            |
+| workspace_members     | workspaces           | \* → 1 | —                            |
+| workspace_invitations | workspaces           | \* → 1 | —                            |
+| workspace_invitations | users                | \* → 1 | —                            |
+| contacts              | threads              | 1 → \* | RESTRICT                     |
+| contacts              | drafts               | 1 → \* | CASCADE                      |
+| senders               | threads              | 1 → \* | RESTRICT                     |
+| senders               | drafts               | 1 → \* | RESTRICT                     |
+| threads               | messages             | 1 → \* | CASCADE                      |
+| threads               | drafts               | 1 → \* | SET NULL                     |
+| messages              | webhook_events       | 1 → \* | CASCADE                      |
 
 ---
 
 ## Indexes
 
-| Table             | Index Name                                | Columns                               |
-| ----------------- | ----------------------------------------- | ------------------------------------- |
-| contacts          | contacts_workspace_id_idx                 | workspaceId                           |
-| contacts          | contacts_workspace_id_email_uq            | workspaceId, email (Unique)           |
-| senders           | senders_workspace_id_idx                  | workspaceId                           |
-| senders           | senders_workspace_id_provider_email_uq    | workspaceId, provider, email (Unique) |
-| threads           | threads_workspace_id_last_message_at_idx  | workspaceId, lastMessageAt            |
-| threads           | threads_workspace_id_status_idx           | workspaceId, status                   |
-| messages          | messages_thread_id_created_at_idx         | threadId, createdAt                   |
-| messages          | messages_status_idx                       | status                                |
-| messages          | messages_status_scheduled_for_idx         | status, scheduledFor                  |
-| workspace_members | workspace_members_workspace_id_idx        | workspaceId                           |
-| workspace_members | workspace_members_user_id_idx             | userId                                |
-| workspace_members | workspace_members_workspace_id_user_id_uq | workspaceId, userId (Unique)          |
-| webhook_events    | webhook_events_message_id_idx             | messageId                             |
-| webhook_events    | webhook_events_workspace_id_idx           | workspaceId                           |
-| webhook_events    | webhook_events_message_id_occurred_at_idx | messageId, occurredAt                 |
+| Table                 | Index Name                                      | Columns                               |
+| --------------------- | ----------------------------------------------- | ------------------------------------- |
+| contacts              | contacts_workspace_id_idx                       | workspaceId                           |
+| contacts              | contacts_workspace_id_email_uq                  | workspaceId, email (Unique)           |
+| messages              | messages_thread_id_created_at_idx               | threadId, createdAt                   |
+| messages              | messages_status_idx                             | status                                |
+| messages              | messages_status_scheduled_for_idx               | status, scheduledFor                  |
+| senders               | senders_workspace_id_idx                        | workspaceId                           |
+| senders               | senders_workspace_id_provider_email_uq          | workspaceId, provider, email (Unique) |
+| threads               | threads_workspace_id_last_message_at_idx        | workspaceId, lastMessageAt            |
+| threads               | threads_workspace_id_status_idx                 | workspaceId, status                   |
+| webhook_events        | webhook_events_message_id_idx                   | messageId                             |
+| webhook_events        | webhook_events_workspace_id_idx                 | workspaceId                           |
+| webhook_events        | webhook_events_message_id_occurred_at_idx       | messageId, occurredAt                 |
+| workspace_invitations | workspace_invitations_workspace_id_email_idx    | workspaceId, email                    |
+| workspace_members     | workspace_members_workspace_id_idx              | workspaceId                           |
+| workspace_members     | workspace_members_user_id_idx                   | userId                                |
+| workspace_members     | workspace_members_workspace_id_user_id_uq       | workspaceId, userId (Unique)          |

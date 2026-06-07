@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1780857649420,
+      "tag": "0000_core-entities-relations-indexes-created",
+      "breakpoints": true
+    }
+  ]
+}
