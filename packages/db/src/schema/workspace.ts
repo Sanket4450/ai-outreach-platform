@@ -10,6 +10,7 @@ import { threads } from './thread';
 import { messages } from './message';
 import { drafts } from './draft';
 import { webhookEvents } from './webhook-event';
+import { workspaceInvitations } from './workspace-invitation';
 
 export const workspaces = pgTable('workspaces', {
   ...idField,
@@ -27,4 +28,5 @@ export const workspacesRelations = relations(workspaces, ({ many }) => ({
   messages: many(messages),
   drafts: many(drafts),
   webhookEvents: many(webhookEvents),
+  workspaceInvitations: many(workspaceInvitations),
 }));

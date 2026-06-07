@@ -5,6 +5,7 @@ import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
 import { softDeleteFields } from './common/soft-delete';
 import { workspaceMembers } from './workspace-member';
+import { workspaceInvitations } from './workspace-invitation';
 
 export const users = pgTable('users', {
   ...idField,
@@ -26,4 +27,5 @@ export const users = pgTable('users', {
 
 export const usersRelations = relations(users, ({ many }) => ({
   workspaceMembers: many(workspaceMembers),
+  workspaceInvitations: many(workspaceInvitations),
 }));
