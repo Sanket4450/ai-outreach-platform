@@ -12,7 +12,9 @@ export const senders = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
     name: text('name').notNull(),
 

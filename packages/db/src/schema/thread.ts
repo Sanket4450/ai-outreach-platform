@@ -14,11 +14,17 @@ export const threads = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
-    contactId: text('contact_id').notNull(),
+    contactId: text('contact_id')
+      .notNull()
+      .references(() => contacts.id, { onDelete: 'restrict' }),
 
-    senderId: text('sender_id').notNull(),
+    senderId: text('sender_id')
+      .notNull()
+      .references(() => senders.id, { onDelete: 'restrict' }),
 
     status: text('status').notNull(),
 

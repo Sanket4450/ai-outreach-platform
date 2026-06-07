@@ -12,9 +12,13 @@ export const webhookEvents = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
-    messageId: text('message_id').notNull(),
+    messageId: text('message_id')
+      .notNull()
+      .references(() => messages.id, { onDelete: 'cascade' }),
 
     provider: text('provider').notNull(),
 

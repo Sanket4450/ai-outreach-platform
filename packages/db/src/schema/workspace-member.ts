@@ -11,9 +11,13 @@ export const workspaceMembers = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
-    userId: text('user_id').notNull(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
 
     role: text('role').notNull(),
 

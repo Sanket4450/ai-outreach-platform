@@ -13,7 +13,9 @@ export const contacts = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
     email: text('email').notNull(),
 

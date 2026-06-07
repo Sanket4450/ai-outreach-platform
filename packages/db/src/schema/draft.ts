@@ -11,13 +11,19 @@ import { contacts } from './contact';
 export const drafts = pgTable('drafts', {
   ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+  workspaceId: text('workspace_id')
+    .notNull()
+    .references(() => workspaces.id, { onDelete: 'cascade' }),
 
-  threadId: text('thread_id'),
+  threadId: text('thread_id').references(() => threads.id, { onDelete: 'set null' }),
 
-  senderId: text('sender_id').notNull(),
+  senderId: text('sender_id')
+    .notNull()
+    .references(() => senders.id, { onDelete: 'restrict' }),
 
-  contactId: text('contact_id').notNull(),
+  contactId: text('contact_id')
+    .notNull()
+    .references(() => contacts.id, { onDelete: 'cascade' }),
 
   subject: text('subject').notNull().default(''),
 

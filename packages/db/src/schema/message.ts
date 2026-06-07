@@ -7,15 +7,20 @@ import { timestampFields } from './common/timestampts';
 import { workspaces } from './workspace';
 import { threads } from './thread';
 import { webhookEvents } from './webhook-event';
+import { softDeleteFields } from './common/soft-delete';
 
 export const messages = pgTable(
   'messages',
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
-    threadId: text('thread_id').notNull(),
+    threadId: text('thread_id')
+      .notNull()
+      .references(() => threads.id, { onDelete: 'cascade' }),
 
     providerMessageId: text('provider_message_id').unique(),
 
@@ -24,6 +29,14 @@ export const messages = pgTable(
     }).notNull(),
 
     status: text('status').notNull(),
+
+    fromEmail: text('from_email').notNull(),
+
+    toEmail: text('to_email').notNull(),
+
+    fromName: text('from_name'),
+
+    toName: text('to_name'),
 
     subject: text('subject').notNull(),
 
@@ -52,6 +65,8 @@ export const messages = pgTable(
     firstClickedAt: timestamp('first_clicked_at', {
       withTimezone: true,
     }),
+
+    ...softDeleteFields,
 
     ...timestampFields,
   },

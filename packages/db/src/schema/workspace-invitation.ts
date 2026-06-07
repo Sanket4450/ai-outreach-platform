@@ -11,7 +11,9 @@ export const workspaceInvitations = pgTable(
   {
     ...idField,
 
-    workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
 
     email: text('email').notNull(),
 
@@ -25,7 +27,9 @@ export const workspaceInvitations = pgTable(
       withTimezone: true,
     }),
 
-    createdBy: text('created_by').notNull(),
+    createdBy: text('created_by')
+      .notNull()
+      .references(() => users.id, { onDelete: 'restrict' }),
 
     ...timestampFields,
   },
