@@ -9,23 +9,33 @@ import { senders } from './sender';
 import { messages } from './message';
 import { drafts } from './draft';
 
-export const threads = pgTable('threads', {
-  ...idField,
+export const threads = pgTable(
+  'threads',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  contactId: text('contact_id').notNull(),
+    contactId: text('contact_id').notNull(),
 
-  senderId: text('sender_id').notNull(),
+    senderId: text('sender_id').notNull(),
 
-  status: text('status').notNull(),
+    status: text('status').notNull(),
 
-  lastMessageAt: timestamp('last_message_at', {
-    withTimezone: true,
-  }),
+    lastMessageAt: timestamp('last_message_at', {
+      withTimezone: true,
+    }),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('threads_workspace_id_last_message_at_idx').on(
+      table.workspaceId,
+      table.lastMessageAt,
+    ),
+    index('threads_workspace_id_status_idx').on(table.workspaceId, table.status),
+  ],
+);
 
 export const threadsRelations = relations(threads, ({ one, many }) => ({
   workspace: one(workspaces, {
@@ -44,10 +54,3 @@ export const threadsRelations = relations(threads, ({ one, many }) => ({
   drafts: many(drafts),
 }));
 
-export const threadsWorkspaceIdLastMessageAtIdx = index(
-  'threads_workspace_id_last_message_at_idx',
-).on(threads.workspaceId, threads.lastMessageAt);
-export const threadsWorkspaceIdStatusIdx = index('threads_workspace_id_status_idx').on(
-  threads.workspaceId,
-  threads.status,
-);

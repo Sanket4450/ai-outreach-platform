@@ -6,17 +6,28 @@ import { timestampFields } from './common/timestampts';
 import { workspaces } from './workspace';
 import { users } from './user';
 
-export const workspaceMembers = pgTable('workspace_members', {
-  ...idField,
+export const workspaceMembers = pgTable(
+  'workspace_members',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  userId: text('user_id').notNull(),
+    userId: text('user_id').notNull(),
 
-  role: text('role').notNull(),
+    role: text('role').notNull(),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('workspace_members_workspace_id_idx').on(table.workspaceId),
+    index('workspace_members_user_id_idx').on(table.userId),
+    uniqueIndex('workspace_members_workspace_id_user_id_uq').on(
+      table.workspaceId,
+      table.userId,
+    ),
+  ],
+);
 
 export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) => ({
   workspace: one(workspaces, {
@@ -29,12 +40,3 @@ export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) =
   }),
 }));
 
-export const workspaceMembersWorkspaceIdIdx = index('workspace_members_workspace_id_idx').on(
-  workspaceMembers.workspaceId,
-);
-export const workspaceMembersUserIdIdx = index('workspace_members_user_id_idx').on(
-  workspaceMembers.userId,
-);
-export const workspaceMembersWorkspaceIdUserIdUq = uniqueIndex(
-  'workspace_members_workspace_id_user_id_uq',
-).on(workspaceMembers.workspaceId, workspaceMembers.userId);

@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uniqueIndex, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
@@ -6,27 +6,33 @@ import { timestampFields } from './common/timestampts';
 import { workspaces } from './workspace';
 import { users } from './user';
 
-export const workspaceInvitations = pgTable('workspace_invitations', {
-  ...idField,
+export const workspaceInvitations = pgTable(
+  'workspace_invitations',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  email: text('email').notNull(),
+    email: text('email').notNull(),
 
-  token: text('token').notNull().unique(),
+    token: text('token').notNull().unique(),
 
-  expiresAt: timestamp('expires_at', {
-    withTimezone: true,
-  }).notNull(),
+    expiresAt: timestamp('expires_at', {
+      withTimezone: true,
+    }).notNull(),
 
-  acceptedAt: timestamp('accepted_at', {
-    withTimezone: true,
-  }),
+    acceptedAt: timestamp('accepted_at', {
+      withTimezone: true,
+    }),
 
-  createdBy: text('created_by').notNull(),
+    createdBy: text('created_by').notNull(),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('workspace_invitations_workspace_id_email_idx').on(table.workspaceId, table.email),
+  ],
+);
 
 export const workspaceInvitationsRelations = relations(workspaceInvitations, ({ one }) => ({
   workspace: one(workspaces, {
@@ -39,9 +45,3 @@ export const workspaceInvitationsRelations = relations(workspaceInvitations, ({ 
   }),
 }));
 
-export const workspaceInvitationsTokenIdx = uniqueIndex('workspace_invitations_token_idx').on(
-  workspaceInvitations.token,
-);
-export const workspaceInvitationsWorkspaceIdEmailIdx = index(
-  'workspace_invitations_workspace_id_email_idx',
-).on(workspaceInvitations.workspaceId, workspaceInvitations.email);

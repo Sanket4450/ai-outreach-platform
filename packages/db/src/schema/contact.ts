@@ -8,29 +8,36 @@ import { workspaces } from './workspace';
 import { threads } from './thread';
 import { drafts } from './draft';
 
-export const contacts = pgTable('contacts', {
-  ...idField,
+export const contacts = pgTable(
+  'contacts',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  email: text('email').notNull(),
+    email: text('email').notNull(),
 
-  firstName: text('first_name'),
+    firstName: text('first_name'),
 
-  lastName: text('last_name'),
+    lastName: text('last_name'),
 
-  company: text('company'),
+    company: text('company'),
 
-  title: text('title'),
+    title: text('title'),
 
-  linkedinUrl: text('linkedin_url'),
+    linkedinUrl: text('linkedin_url'),
 
-  notes: text('notes'),
+    notes: text('notes'),
 
-  ...softDeleteFields,
+    ...softDeleteFields,
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('contacts_workspace_id_idx').on(table.workspaceId),
+    uniqueIndex('contacts_workspace_id_email_uq').on(table.workspaceId, table.email),
+  ],
+);
 
 export const contactsRelations = relations(contacts, ({ one, many }) => ({
   workspace: one(workspaces, {
@@ -40,9 +47,3 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
   threads: many(threads),
   drafts: many(drafts),
 }));
-
-export const contactsWorkspaceIdIdx = index('contacts_workspace_id_idx').on(contacts.workspaceId);
-export const contactsWorkspaceIdEmailUq = uniqueIndex('contacts_workspace_id_email_uq').on(
-  contacts.workspaceId,
-  contacts.email,
-);

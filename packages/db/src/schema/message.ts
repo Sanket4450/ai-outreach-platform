@@ -8,51 +8,59 @@ import { workspaces } from './workspace';
 import { threads } from './thread';
 import { webhookEvents } from './webhook-event';
 
-export const messages = pgTable('messages', {
-  ...idField,
+export const messages = pgTable(
+  'messages',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  threadId: text('thread_id').notNull(),
+    threadId: text('thread_id').notNull(),
 
-  providerMessageId: text('provider_message_id').unique(),
+    providerMessageId: text('provider_message_id').unique(),
 
-  direction: text('direction', {
-    enum: MESSAGE_DIRECTIONS,
-  }).notNull(),
+    direction: text('direction', {
+      enum: MESSAGE_DIRECTIONS,
+    }).notNull(),
 
-  status: text('status').notNull(),
+    status: text('status').notNull(),
 
-  subject: text('subject').notNull(),
+    subject: text('subject').notNull(),
 
-  body: text('body').notNull(),
+    body: text('body').notNull(),
 
-  scheduledFor: timestamp('scheduled_for', {
-    withTimezone: true,
-  }),
+    scheduledFor: timestamp('scheduled_for', {
+      withTimezone: true,
+    }),
 
-  sentAt: timestamp('sent_at', {
-    withTimezone: true,
-  }),
+    sentAt: timestamp('sent_at', {
+      withTimezone: true,
+    }),
 
-  deliveredAt: timestamp('delivered_at', {
-    withTimezone: true,
-  }),
+    deliveredAt: timestamp('delivered_at', {
+      withTimezone: true,
+    }),
 
-  bouncedAt: timestamp('bounced_at', {
-    withTimezone: true,
-  }),
+    bouncedAt: timestamp('bounced_at', {
+      withTimezone: true,
+    }),
 
-  firstOpenedAt: timestamp('first_opened_at', {
-    withTimezone: true,
-  }),
+    firstOpenedAt: timestamp('first_opened_at', {
+      withTimezone: true,
+    }),
 
-  firstClickedAt: timestamp('first_clicked_at', {
-    withTimezone: true,
-  }),
+    firstClickedAt: timestamp('first_clicked_at', {
+      withTimezone: true,
+    }),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('messages_thread_id_created_at_idx').on(table.threadId, table.createdAt),
+    index('messages_status_idx').on(table.status),
+    index('messages_status_scheduled_for_idx').on(table.status, table.scheduledFor),
+  ],
+);
 
 export const messagesRelations = relations(messages, ({ one, many }) => ({
   workspace: one(workspaces, {
@@ -66,12 +74,3 @@ export const messagesRelations = relations(messages, ({ one, many }) => ({
   webhookEvents: many(webhookEvents),
 }));
 
-export const messagesThreadIdCreatedAtIdx = index('messages_thread_id_created_at_idx').on(
-  messages.threadId,
-  messages.createdAt,
-);
-export const messagesStatusIdx = index('messages_status_idx').on(messages.status);
-export const messagesStatusScheduledForIdx = index('messages_status_scheduled_for_idx').on(
-  messages.status,
-  messages.scheduledFor,
-);

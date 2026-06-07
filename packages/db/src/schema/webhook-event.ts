@@ -7,27 +7,35 @@ import { WEBHOOK_EVENT_TYPES } from '@repo/shared';
 import { workspaces } from './workspace';
 import { messages } from './message';
 
-export const webhookEvents = pgTable('webhook_events', {
-  ...idField,
+export const webhookEvents = pgTable(
+  'webhook_events',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  messageId: text('message_id').notNull(),
+    messageId: text('message_id').notNull(),
 
-  provider: text('provider').notNull(),
+    provider: text('provider').notNull(),
 
-  eventType: text('event_type', {
-    enum: WEBHOOK_EVENT_TYPES,
-  }).notNull(),
+    eventType: text('event_type', {
+      enum: WEBHOOK_EVENT_TYPES,
+    }).notNull(),
 
-  payload: jsonb('payload').notNull(),
+    payload: jsonb('payload').notNull(),
 
-  occurredAt: timestamp('occurred_at', {
-    withTimezone: true,
-  }).notNull(),
+    occurredAt: timestamp('occurred_at', {
+      withTimezone: true,
+    }).notNull(),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('webhook_events_message_id_idx').on(table.messageId),
+    index('webhook_events_workspace_id_idx').on(table.workspaceId),
+    index('webhook_events_message_id_occurred_at_idx').on(table.messageId, table.occurredAt),
+  ],
+);
 
 export const webhookEventsRelations = relations(webhookEvents, ({ one }) => ({
   workspace: one(workspaces, {
@@ -40,12 +48,3 @@ export const webhookEventsRelations = relations(webhookEvents, ({ one }) => ({
   }),
 }));
 
-export const webhookEventsMessageIdIdx = index('webhook_events_message_id_idx').on(
-  webhookEvents.messageId,
-);
-export const webhookEventsWorkspaceIdIdx = index('webhook_events_workspace_id_idx').on(
-  webhookEvents.workspaceId,
-);
-export const webhookEventsMessageIdOccurredAtIdx = index(
-  'webhook_events_message_id_occurred_at_idx',
-).on(webhookEvents.messageId, webhookEvents.occurredAt);

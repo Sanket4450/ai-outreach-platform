@@ -7,21 +7,32 @@ import { workspaces } from './workspace';
 import { threads } from './thread';
 import { drafts } from './draft';
 
-export const senders = pgTable('senders', {
-  ...idField,
+export const senders = pgTable(
+  'senders',
+  {
+    ...idField,
 
-  workspaceId: text('workspace_id').notNull(),
+    workspaceId: text('workspace_id').notNull(),
 
-  name: text('name').notNull(),
+    name: text('name').notNull(),
 
-  email: text('email').notNull(),
+    email: text('email').notNull(),
 
-  provider: text('provider').notNull(),
+    provider: text('provider').notNull(),
 
-  providerConfig: jsonb('provider_config'),
+    providerConfig: jsonb('provider_config'),
 
-  ...timestampFields,
-});
+    ...timestampFields,
+  },
+  (table) => [
+    index('senders_workspace_id_idx').on(table.workspaceId),
+    uniqueIndex('senders_workspace_id_provider_email_uq').on(
+      table.workspaceId,
+      table.provider,
+      table.email,
+    ),
+  ],
+);
 
 export const sendersRelations = relations(senders, ({ one, many }) => ({
   workspace: one(workspaces, {
@@ -32,7 +43,3 @@ export const sendersRelations = relations(senders, ({ one, many }) => ({
   drafts: many(drafts),
 }));
 
-export const sendersWorkspaceIdIdx = index('senders_workspace_id_idx').on(senders.workspaceId);
-export const sendersWorkspaceIdProviderEmailUq = uniqueIndex(
-  'senders_workspace_id_provider_email_uq',
-).on(senders.workspaceId, senders.provider, senders.email);
