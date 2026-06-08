@@ -80,14 +80,14 @@ export const createSenderSchema = z.object({
   name: z.string().min(1).max(200),
   email: z.email(),
   provider: z.enum(SENDER_PROVIDERS as unknown as [string, ...string[]]),
-  providerConfig: z.record(z.unknown()).optional().default({}),
+  providerConfig: z.record(z.string(), z.unknown()).optional().default({}),
 });
 
 export const updateSenderSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   email: z.email().optional(),
   provider: z.enum(SENDER_PROVIDERS as unknown as [string, ...string[]]).optional(),
-  providerConfig: z.record(z.unknown()).optional(),
+  providerConfig: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const listSendersQuerySchema = z.object({

@@ -5,9 +5,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 import { WorkspaceInvitationsModule } from './modules/workspace-invitations/workspace-invitations.module';
 import { ContactsModule } from './modules/contacts/contacts.module';
+import { SendersModule } from './modules/senders/senders.module';
 
 @Module({
-  imports: [AuthModule, WorkspacesModule, WorkspaceInvitationsModule, ContactsModule],
+  imports: [AuthModule, WorkspacesModule, WorkspaceInvitationsModule, ContactsModule, SendersModule],
   controllers: [AppController],
   providers: [AppService],
 })
