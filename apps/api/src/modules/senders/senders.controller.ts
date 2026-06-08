@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { SendersService } from './senders.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
 import {
   createSenderSchema,
   updateSenderSchema,
@@ -21,6 +22,7 @@ import {
 
 interface AuthenticatedRequest extends Request {
   user: { userId: string; email: string };
+  workspaceId: string;
 }
 
 @Controller('senders')
@@ -28,78 +30,51 @@ export class SendersController {
   constructor(private readonly sendersService: SendersService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async createSender(
     @Body() body: unknown,
     @Req() req: AuthenticatedRequest,
   ) {
     const input = createSenderSchema.parse(body);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.sendersService.createSender(input, workspaceId);
+    return this.sendersService.createSender(input, req.workspaceId);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async listSenders(
     @Query() query: unknown,
     @Req() req: AuthenticatedRequest,
   ) {
     const parsed = listSendersQuerySchema.parse(query);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.sendersService.listSenders(workspaceId, parsed);
+    return this.sendersService.listSenders(req.workspaceId, parsed);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async getSender(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
-    const workspaceId = req.headers['x-workspace-id'] as string;
-
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.sendersService.getSender(id, workspaceId);
+    return this.sendersService.getSender(id, req.workspaceId);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async updateSender(
     @Param('id') id: string,
     @Body() body: unknown,
     @Req() req: AuthenticatedRequest,
   ) {
     const input = updateSenderSchema.parse(body);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.sendersService.updateSender(id, workspaceId, input);
+    return this.sendersService.updateSender(id, req.workspaceId, input);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async deleteSender(
     @Param('id') id: string,
     @Req() req: AuthenticatedRequest,
   ) {
-    const workspaceId = req.headers['x-workspace-id'] as string;
-
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.sendersService.deleteSender(id, workspaceId);
+    return this.sendersService.deleteSender(id, req.workspaceId);
   }
 }

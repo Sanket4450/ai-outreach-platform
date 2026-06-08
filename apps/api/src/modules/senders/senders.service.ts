@@ -1,10 +1,9 @@
-import {
-  Injectable,
-  ConflictException,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SendersRepository } from './senders-repository';
+import { AppError } from '../../errors/AppError';
+import { ERROR_CODES } from '../../utils/error-codes';
+import { STATUS_CODES } from '../../utils/status-codes';
+import { MESSAGES } from '../../utils/messages';
 import type {
   CreateSenderInput,
   UpdateSenderInput,
@@ -23,8 +22,10 @@ export class SendersService {
         input.provider,
       );
     if (existing) {
-      throw new ConflictException(
-        'Sender with this email and provider already exists in this workspace',
+      throw new AppError(
+        ERROR_CODES.SENDER_ALREADY_EXISTS,
+        STATUS_CODES.CONFLICT,
+        MESSAGES.error.SENDER_ALREADY_EXISTS,
       );
     }
 
@@ -35,11 +36,19 @@ export class SendersService {
     const sender = await this.sendersRepository.findById(id);
 
     if (!sender) {
-      throw new NotFoundException('Sender not found');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.SENDER_NOT_FOUND,
+      );
     }
 
     if (sender.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Sender does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.SENDER_NOT_IN_WORKSPACE,
+      );
     }
 
     return sender;
@@ -57,11 +66,19 @@ export class SendersService {
     const sender = await this.sendersRepository.findById(id);
 
     if (!sender) {
-      throw new NotFoundException('Sender not found');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.SENDER_NOT_FOUND,
+      );
     }
 
     if (sender.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Sender does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.SENDER_NOT_IN_WORKSPACE,
+      );
     }
 
     if (
@@ -76,8 +93,10 @@ export class SendersService {
           input.provider,
         );
       if (conflict) {
-        throw new ConflictException(
-          'Sender with this email and provider already exists in this workspace',
+        throw new AppError(
+          ERROR_CODES.SENDER_ALREADY_EXISTS,
+          STATUS_CODES.CONFLICT,
+          MESSAGES.error.SENDER_ALREADY_EXISTS,
         );
       }
     }
@@ -89,18 +108,28 @@ export class SendersService {
     const sender = await this.sendersRepository.findById(id);
 
     if (!sender) {
-      throw new NotFoundException('Sender not found');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.SENDER_NOT_FOUND,
+      );
     }
 
     if (sender.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Sender does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.SENDER_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.SENDER_NOT_IN_WORKSPACE,
+      );
     }
 
     const hasActiveThreads =
       await this.sendersRepository.hasActiveThreads(id);
     if (hasActiveThreads) {
-      throw new ConflictException(
-        'Cannot delete sender that is referenced by active threads',
+      throw new AppError(
+        ERROR_CODES.SENDER_HAS_ACTIVE_THREADS,
+        STATUS_CODES.CONFLICT,
+        MESSAGES.error.SENDER_HAS_ACTIVE_THREADS,
       );
     }
 

@@ -11,5 +11,13 @@ export const MESSAGES = {
     INVITATION_INVALID_OR_EXPIRED: 'Invitation is invalid or expired',
     INVITATION_EMAIL_MISMATCH: 'This invitation was sent to {{email}}',
     ALREADY_WORKSPACE_MEMBER: 'Already a member of this workspace',
+    MISSING_WORKSPACE_ID: 'Missing x-workspace-id header',
+    SENDER_NOT_FOUND: 'Sender not found',
+    SENDER_NOT_IN_WORKSPACE: 'Sender does not belong to this workspace',
+    SENDER_ALREADY_EXISTS: 'Sender with this email and provider already exists in this workspace',
+    SENDER_HAS_ACTIVE_THREADS: 'Cannot delete sender that is referenced by active threads',
+    CONTACT_NOT_FOUND: 'Contact not found',
+    CONTACT_NOT_IN_WORKSPACE: 'Contact does not belong to this workspace',
+    CONTACT_ALREADY_EXISTS: 'Contact with this email already exists in this workspace',
   },
 } as const;

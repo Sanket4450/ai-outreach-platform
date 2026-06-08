@@ -1,5 +1,9 @@
-import { Injectable, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ContactsRepository } from './contacts-repository';
+import { AppError } from '../../errors/AppError';
+import { ERROR_CODES } from '../../utils/error-codes';
+import { STATUS_CODES } from '../../utils/status-codes';
+import { MESSAGES } from '../../utils/messages';
 import type { CreateContactInput, UpdateContactInput, ListContactsQuery } from '@repo/shared';
 
 @Injectable()
@@ -9,7 +13,11 @@ export class ContactsService {
   async createContact(input: CreateContactInput, workspaceId: string) {
     const existing = await this.contactsRepository.findByEmailInWorkspace(workspaceId, input.email);
     if (existing) {
-      throw new ConflictException('Contact with this email already exists in this workspace');
+      throw new AppError(
+        ERROR_CODES.CONTACT_ALREADY_EXISTS,
+        STATUS_CODES.CONFLICT,
+        MESSAGES.error.CONTACT_ALREADY_EXISTS,
+      );
     }
 
     return this.contactsRepository.createContact({ ...input, workspaceId });
@@ -19,11 +27,19 @@ export class ContactsService {
     const contact = await this.contactsRepository.findActiveById(id);
 
     if (!contact) {
-      throw new NotFoundException('Contact not found');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.CONTACT_NOT_FOUND,
+      );
     }
 
     if (contact.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Contact does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.CONTACT_NOT_IN_WORKSPACE,
+      );
     }
 
     return contact;
@@ -37,17 +53,29 @@ export class ContactsService {
     const contact = await this.contactsRepository.findActiveById(id);
 
     if (!contact) {
-      throw new NotFoundException('Contact not found');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.CONTACT_NOT_FOUND,
+      );
     }
 
     if (contact.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Contact does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.CONTACT_NOT_IN_WORKSPACE,
+      );
     }
 
     if (input.email && input.email !== contact.email) {
       const emailConflict = await this.contactsRepository.findByEmailInWorkspace(workspaceId, input.email);
       if (emailConflict) {
-        throw new ConflictException('Contact with this email already exists in this workspace');
+        throw new AppError(
+          ERROR_CODES.CONTACT_ALREADY_EXISTS,
+          STATUS_CODES.CONFLICT,
+          MESSAGES.error.CONTACT_ALREADY_EXISTS,
+        );
       }
     }
 
@@ -58,11 +86,19 @@ export class ContactsService {
     const contact = await this.contactsRepository.findActiveById(id);
 
     if (!contact) {
-      throw new NotFoundException('Contact not found');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_FOUND,
+        STATUS_CODES.NOT_FOUND,
+        MESSAGES.error.CONTACT_NOT_FOUND,
+      );
     }
 
     if (contact.workspaceId !== workspaceId) {
-      throw new ForbiddenException('Contact does not belong to this workspace');
+      throw new AppError(
+        ERROR_CODES.CONTACT_NOT_IN_WORKSPACE,
+        STATUS_CODES.FORBIDDEN,
+        MESSAGES.error.CONTACT_NOT_IN_WORKSPACE,
+      );
     }
 
     return this.contactsRepository.softDelete(id);

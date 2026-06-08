@@ -1,11 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
 import { ContactsService } from './contacts.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
 import { createContactSchema, updateContactSchema, listContactsQuerySchema } from '@repo/shared';
 
 interface AuthenticatedRequest extends Request {
   user: { userId: string; email: string };
+  workspaceId: string;
 }
 
 @Controller('contacts')
@@ -13,69 +15,42 @@ export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async createContact(@Body() body: unknown, @Req() req: AuthenticatedRequest) {
     const input = createContactSchema.parse(body);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.contactsService.createContact(input, workspaceId);
+    return this.contactsService.createContact(input, req.workspaceId);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async listContacts(@Query() query: unknown, @Req() req: AuthenticatedRequest) {
     const parsed = listContactsQuerySchema.parse(query);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.contactsService.listContacts(workspaceId, parsed);
+    return this.contactsService.listContacts(req.workspaceId, parsed);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async getContact(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
-    const workspaceId = req.headers['x-workspace-id'] as string;
-
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.contactsService.getContact(id, workspaceId);
+    return this.contactsService.getContact(id, req.workspaceId);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async updateContact(
     @Param('id') id: string,
     @Body() body: unknown,
     @Req() req: AuthenticatedRequest,
   ) {
     const input = updateContactSchema.parse(body);
-    const workspaceId = req.headers['x-workspace-id'] as string;
 
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.contactsService.updateContact(id, workspaceId, input);
+    return this.contactsService.updateContact(id, req.workspaceId, input);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
   async deleteContact(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
-    const workspaceId = req.headers['x-workspace-id'] as string;
-
-    if (!workspaceId) {
-      throw new Error('Missing x-workspace-id header');
-    }
-
-    return this.contactsService.deleteContact(id, workspaceId);
+    return this.contactsService.deleteContact(id, req.workspaceId);
   }
 }
