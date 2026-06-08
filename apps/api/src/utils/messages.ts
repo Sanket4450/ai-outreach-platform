@@ -19,5 +19,11 @@ export const MESSAGES = {
     CONTACT_NOT_FOUND: 'Contact not found',
     CONTACT_NOT_IN_WORKSPACE: 'Contact does not belong to this workspace',
     CONTACT_ALREADY_EXISTS: 'Contact with this email already exists in this workspace',
+    THREAD_NOT_FOUND: 'Thread not found',
+    THREAD_NOT_IN_WORKSPACE: 'Thread does not belong to this workspace',
+    MESSAGE_NOT_FOUND: 'Message not found',
+    MESSAGE_NOT_IN_WORKSPACE: 'Message does not belong to this workspace',
+    MESSAGE_NOT_IN_THREAD: 'Message does not belong to this thread',
+    MESSAGE_ALREADY_SENT: 'Message has already been sent',
   },
 } as const;

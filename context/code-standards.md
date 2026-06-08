@@ -278,6 +278,89 @@ Contains:
 
 No business rules.
 
+### Guards
+
+Use guards for cross-cutting request concerns like header extraction and authorization.
+
+Example — `workspace-id.guard.ts`:
+
+```ts
+// apps/api/src/guards/workspace-id.guard.ts
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { AppError } from '../errors/AppError';
+import { ERROR_CODES } from '../utils/error-codes';
+import { STATUS_CODES } from '../utils/status-codes';
+import { MESSAGES } from '../utils/messages';
+
+@Injectable()
+export class WorkspaceIdGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const workspaceId = request.headers['x-workspace-id'];
+
+    if (!workspaceId) {
+      throw new AppError(
+        ERROR_CODES.MISSING_WORKSPACE_ID,
+        STATUS_CODES.BAD_REQUEST,
+        MESSAGES.error.MISSING_WORKSPACE_ID,
+      );
+    }
+
+    request.workspaceId = workspaceId;
+    return true;
+  }
+}
+```
+
+Usage in controllers:
+
+```ts
+@UseGuards(JwtAuthGuard, WorkspaceIdGuard)
+@Controller('senders')
+export class SendersController {
+  @Post()
+  create(@Req() req: AuthenticatedRequest, @Body() body: CreateSenderInput) {
+    return this.sendersService.createSender(body, req.workspaceId);
+  }
+}
+```
+
+Rules:
+
+- Guards must not contain business logic — only request validation and authorization
+- Attach validated values to the request object (e.g., `req.workspaceId`) so downstream code doesn't re-extract headers
+- Use `AppError` for all guard failures — never throw raw `Error` or NestJS built-in exceptions
+
+### Error Handling
+
+In `apps/api`, always use the `AppError` class for throwing errors. Never use raw `Error` or NestJS built-in exceptions (`ConflictException`, `NotFoundException`, `ForbiddenException`, etc.).
+
+`AppError` expects three arguments:
+
+```ts
+throw new AppError(code, statusCode, message);
+```
+
+- `code` — a string constant from `apps/api/src/utils/error-codes.ts`
+- `statusCode` — a numeric HTTP status from `apps/api/src/utils/status-codes.ts`
+- `message` — a human-readable string from `apps/api/src/utils/messages.ts`
+
+Example:
+
+```ts
+throw new AppError(
+  ERROR_CODES.SENDER_NOT_FOUND,
+  STATUS_CODES.NOT_FOUND,
+  MESSAGES.error.SENDER_NOT_FOUND,
+);
+```
+
+When adding a new error:
+
+1. Add the code to `ERROR_CODES` in `apps/api/src/utils/error-codes.ts`
+2. Add the message to `MESSAGES.error` in `apps/api/src/utils/messages.ts`
+3. Use an existing `STATUS_CODES` value — no new status codes unless absolutely necessary
+
 ### Module Boundaries
 
 Cross-module access goes through services.

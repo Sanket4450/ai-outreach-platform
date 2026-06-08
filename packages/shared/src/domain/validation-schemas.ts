@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SENDER_PROVIDERS } from './enums';
+import { SENDER_PROVIDERS, THREAD_STATUSES } from './enums';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -96,6 +96,28 @@ export const listSendersQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 });
 
+// ── Threads ───────────────────────────────────────────────────────────────────
+
+export const listThreadsQuerySchema = z.object({
+  status: z.enum(THREAD_STATUSES).optional(),
+  page: z.coerce.number().int().min(1).optional().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
+
+// ── Messages ──────────────────────────────────────────────────────────────────
+
+export const createMessageSchema = z.object({
+  threadId: z.string().uuid(),
+  subject: z.string().min(1).max(500),
+  body: z.string().min(1).max(50000),
+});
+
+export const listMessagesQuerySchema = z.object({
+  threadId: z.string().uuid(),
+  page: z.coerce.number().int().min(1).optional().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
+
 // ── Inferred types ────────────────────────────────────────────────────────────
 
 export type CheckEmailInput = z.infer<typeof checkEmailSchema>;
@@ -112,3 +134,6 @@ export type ListContactsQuery = z.infer<typeof listContactsQuerySchema>;
 export type CreateSenderInput = z.infer<typeof createSenderSchema>;
 export type UpdateSenderInput = z.infer<typeof updateSenderSchema>;
 export type ListSendersQuery = z.infer<typeof listSendersQuerySchema>;
+export type ListThreadsQuery = z.infer<typeof listThreadsQuerySchema>;
+export type CreateMessageInput = z.infer<typeof createMessageSchema>;
+export type ListMessagesQuery = z.infer<typeof listMessagesQuerySchema>;
