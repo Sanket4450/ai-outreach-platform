@@ -280,9 +280,9 @@
 │               ON DELETE CASCADE   │
 │ threadId      FK (nullable)       │
 │               ON DELETE SET NULL  │
-│ senderId      FK, Required        │
+│ senderId      FK (nullable)       │
 │               ON DELETE RESTRICT  │
-│ contactId     FK, Required        │
+│ contactId     FK (nullable)       │
 │               ON DELETE CASCADE   │
 │ subject       Required            │
 │               Default ''          │
