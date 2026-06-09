@@ -8,9 +8,10 @@ import { ContactsModule } from './modules/contacts/contacts.module';
 import { SendersModule } from './modules/senders/senders.module';
 import { ThreadsModule } from './modules/threads/threads.module';
 import { MessagesModule } from './modules/messages/messages.module';
+import { DraftsModule } from './modules/drafts/drafts.module';
 
 @Module({
-  imports: [AuthModule, WorkspacesModule, WorkspaceInvitationsModule, ContactsModule, SendersModule, ThreadsModule, MessagesModule],
+  imports: [AuthModule, WorkspacesModule, WorkspaceInvitationsModule, ContactsModule, SendersModule, ThreadsModule, MessagesModule, DraftsModule],
   controllers: [AppController],
   providers: [AppService],
 })

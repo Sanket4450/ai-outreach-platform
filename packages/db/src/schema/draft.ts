@@ -27,6 +27,8 @@ export const drafts = pgTable('drafts', {
 
   body: text('body').notNull().default(''),
 
+  status: text('status').notNull(),
+
   ...timestampFields,
 });
 

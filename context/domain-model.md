@@ -288,6 +288,8 @@
 │               Default ''          │
 │ body          Required            │
 │               Default ''          │
+│ status        Required            │
+│               (DRAFT_STATUSES)    │
 │ createdAt     Required            │
 │ updatedAt     Required            │
 └───────────────────────────────────┘

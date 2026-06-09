@@ -25,5 +25,10 @@ export const MESSAGES = {
     MESSAGE_NOT_IN_WORKSPACE: 'Message does not belong to this workspace',
     MESSAGE_NOT_IN_THREAD: 'Message does not belong to this thread',
     MESSAGE_ALREADY_SENT: 'Message has already been sent',
+    DRAFT_NOT_FOUND: 'Draft not found',
+    DRAFT_NOT_IN_WORKSPACE: 'Draft does not belong to this workspace',
+    DRAFT_CANNOT_BE_SENT: 'Draft cannot be sent. Subject, body, contact, and sender are required',
+    DRAFT_ALREADY_SENT: 'Draft has already been sent',
+    DRAFT_ALREADY_DISCARDED: 'Draft has already been discarded',
   },
 } as const;

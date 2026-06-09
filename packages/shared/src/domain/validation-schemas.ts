@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SENDER_PROVIDERS, THREAD_STATUSES } from './enums';
+import { SENDER_PROVIDERS, THREAD_STATUSES, DRAFT_STATUSES } from './enums';
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -118,6 +118,23 @@ export const listMessagesQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
 });
 
+// ── Drafts ────────────────────────────────────────────────────────────────────
+
+export const createDraftSchema = z.object({});
+
+export const updateDraftSchema = z.object({
+  subject: z.string().min(0).max(500).optional(),
+  body: z.string().min(0).max(50000).optional(),
+  contactId: z.string().uuid().optional(),
+  senderId: z.string().uuid().optional(),
+});
+
+export const listDraftsQuerySchema = z.object({
+  status: z.enum(DRAFT_STATUSES).optional(),
+  page: z.coerce.number().int().min(1).optional().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+});
+
 // ── Inferred types ────────────────────────────────────────────────────────────
 
 export type CheckEmailInput = z.infer<typeof checkEmailSchema>;
@@ -137,3 +154,6 @@ export type ListSendersQuery = z.infer<typeof listSendersQuerySchema>;
 export type ListThreadsQuery = z.infer<typeof listThreadsQuerySchema>;
 export type CreateMessageInput = z.infer<typeof createMessageSchema>;
 export type ListMessagesQuery = z.infer<typeof listMessagesQuerySchema>;
+export type CreateDraftInput = z.infer<typeof createDraftSchema>;
+export type UpdateDraftInput = z.infer<typeof updateDraftSchema>;
+export type ListDraftsQuery = z.infer<typeof listDraftsQuerySchema>;
