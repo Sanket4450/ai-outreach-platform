@@ -1,14 +1,9 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import type { Request } from 'express';
 import { WorkspaceInvitationsService } from './workspace-invitations.service';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
 import { createInvitationSchema, registerFromInvitationSchema } from '@repo/shared';
-
-interface AuthenticatedRequest extends Request {
-  user: { userId: string; email: string };
-  workspaceId: string;
-}
+import type { UserRequest, WorkspaceRequest } from '../../utils/types';
 
 @Controller('workspace-invitations')
 export class WorkspaceInvitationsController {
@@ -16,7 +11,7 @@ export class WorkspaceInvitationsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async createInvitation(@Body() body: unknown, @Req() req: AuthenticatedRequest) {
+  async createInvitation(@Body() body: unknown, @Req() req: WorkspaceRequest) {
     const input = createInvitationSchema.parse(body);
 
     return this.invitationsService.createInvitation(input, req.workspaceId, req.user.userId);
@@ -29,7 +24,7 @@ export class WorkspaceInvitationsController {
 
   @Post(':token/accept')
   @UseGuards(JwtAuthGuard)
-  async acceptInvitation(@Param('token') token: string, @Req() req: AuthenticatedRequest) {
+  async acceptInvitation(@Param('token') token: string, @Req() req: UserRequest) {
     return this.invitationsService.acceptInvitation(token, req.user.userId, req.user.email);
   }
 

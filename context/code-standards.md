@@ -319,7 +319,7 @@ Usage in controllers:
 @Controller('senders')
 export class SendersController {
   @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() body: CreateSenderInput) {
+  create(@Req() req: UserRequest, @Body() body: CreateSenderInput) {
     return this.sendersService.createSender(body, req.workspaceId);
   }
 }

@@ -1,14 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import type { Request } from 'express';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
 import { createContactSchema, updateContactSchema, listContactsQuerySchema } from '@repo/shared';
-
-interface AuthenticatedRequest extends Request {
-  user: { userId: string; email: string };
-  workspaceId: string;
-}
+import type { WorkspaceRequest } from '../../utils/types';
 
 @Controller('contacts')
 export class ContactsController {
@@ -16,7 +22,7 @@ export class ContactsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async createContact(@Body() body: unknown, @Req() req: AuthenticatedRequest) {
+  async createContact(@Body() body: unknown, @Req() req: WorkspaceRequest) {
     const input = createContactSchema.parse(body);
 
     return this.contactsService.createContact(input, req.workspaceId);
@@ -24,7 +30,7 @@ export class ContactsController {
 
   @Get()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async listContacts(@Query() query: unknown, @Req() req: AuthenticatedRequest) {
+  async listContacts(@Query() query: unknown, @Req() req: WorkspaceRequest) {
     const parsed = listContactsQuerySchema.parse(query);
 
     return this.contactsService.listContacts(req.workspaceId, parsed);
@@ -32,7 +38,7 @@ export class ContactsController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async getContact(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async getContact(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.contactsService.getContact(id, req.workspaceId);
   }
 
@@ -41,7 +47,7 @@ export class ContactsController {
   async updateContact(
     @Param('id') id: string,
     @Body() body: unknown,
-    @Req() req: AuthenticatedRequest,
+    @Req() req: WorkspaceRequest,
   ) {
     const input = updateContactSchema.parse(body);
 
@@ -50,7 +56,7 @@ export class ContactsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async deleteContact(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async deleteContact(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.contactsService.deleteContact(id, req.workspaceId);
   }
 }

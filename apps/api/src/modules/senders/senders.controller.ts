@@ -10,7 +10,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import type { Request } from 'express';
 import { SendersService } from './senders.service';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
@@ -19,11 +18,7 @@ import {
   updateSenderSchema,
   listSendersQuerySchema,
 } from '@repo/shared';
-
-interface AuthenticatedRequest extends Request {
-  user: { userId: string; email: string };
-  workspaceId: string;
-}
+import type { WorkspaceRequest } from '../../utils/types';
 
 @Controller('senders')
 export class SendersController {
@@ -31,10 +26,7 @@ export class SendersController {
 
   @Post()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async createSender(
-    @Body() body: unknown,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async createSender(@Body() body: unknown, @Req() req: WorkspaceRequest) {
     const input = createSenderSchema.parse(body);
 
     return this.sendersService.createSender(input, req.workspaceId);
@@ -42,10 +34,7 @@ export class SendersController {
 
   @Get()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async listSenders(
-    @Query() query: unknown,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async listSenders(@Query() query: unknown, @Req() req: WorkspaceRequest) {
     const parsed = listSendersQuerySchema.parse(query);
 
     return this.sendersService.listSenders(req.workspaceId, parsed);
@@ -53,17 +42,13 @@ export class SendersController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async getSender(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async getSender(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.sendersService.getSender(id, req.workspaceId);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async updateSender(
-    @Param('id') id: string,
-    @Body() body: unknown,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async updateSender(@Param('id') id: string, @Body() body: unknown, @Req() req: WorkspaceRequest) {
     const input = updateSenderSchema.parse(body);
 
     return this.sendersService.updateSender(id, req.workspaceId, input);
@@ -71,10 +56,7 @@ export class SendersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async deleteSender(
-    @Param('id') id: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async deleteSender(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.sendersService.deleteSender(id, req.workspaceId);
   }
 }

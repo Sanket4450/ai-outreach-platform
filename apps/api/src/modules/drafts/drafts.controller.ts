@@ -10,16 +10,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import type { Request } from 'express';
 import { DraftsService } from './drafts.service';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
 import { createDraftSchema, updateDraftSchema, listDraftsQuerySchema } from '@repo/shared';
-
-interface AuthenticatedRequest extends Request {
-  user: { userId: string; email: string };
-  workspaceId: string;
-}
+import type { WorkspaceRequest } from '../../utils/types';
 
 @Controller('drafts')
 export class DraftsController {
@@ -27,7 +22,7 @@ export class DraftsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async create(@Body() body: unknown, @Req() req: AuthenticatedRequest) {
+  async create(@Body() body: unknown, @Req() req: WorkspaceRequest) {
     createDraftSchema.parse(body);
 
     return this.draftsService.createDraft(req.workspaceId);
@@ -35,10 +30,7 @@ export class DraftsController {
 
   @Get()
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async list(
-    @Query() query: unknown,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async list(@Query() query: unknown, @Req() req: WorkspaceRequest) {
     const parsed = listDraftsQuerySchema.parse(query);
 
     return this.draftsService.listDrafts(req.workspaceId, parsed);
@@ -46,17 +38,13 @@ export class DraftsController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async get(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async get(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.draftsService.getDraft(id, req.workspaceId);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async update(
-    @Param('id') id: string,
-    @Body() body: unknown,
-    @Req() req: AuthenticatedRequest,
-  ) {
+  async update(@Param('id') id: string, @Body() body: unknown, @Req() req: WorkspaceRequest) {
     const input = updateDraftSchema.parse(body);
 
     return this.draftsService.updateDraft(id, req.workspaceId, input);
@@ -64,13 +52,13 @@ export class DraftsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async delete(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async delete(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.draftsService.deleteDraft(id, req.workspaceId);
   }
 
   @Post(':id/send')
   @UseGuards(JwtAuthGuard, WorkspaceIdGuard)
-  async send(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  async send(@Param('id') id: string, @Req() req: WorkspaceRequest) {
     return this.draftsService.sendDraft(id, req.workspaceId);
   }
 }
