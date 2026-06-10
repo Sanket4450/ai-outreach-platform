@@ -48,4 +48,3 @@ export const workspaceInvitationsRelations = relations(workspaceInvitations, ({ 
     references: [users.id],
   }),
 }));
-

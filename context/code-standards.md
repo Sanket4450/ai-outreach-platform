@@ -139,8 +139,13 @@ ai-outreach-platform/
 
 - Domain enums (`THREAD_STATUSES`, `MESSAGE_DIRECTIONS`, etc.)
 - TypeScript types for domain entities
-- Zod validation schemas
-- Shared constants and utility values
+- Zod validation schemas (organized into domain-specific files: `auth.ts`, `contacts.ts`, `drafts.ts`, `messages.ts`, `senders.ts`, `threads.ts`, `workspaces.ts`)
+- Shared constants (`BCRYPT_ROUNDS`, `OTP_LENGTH`, etc.)
+- Error codes (`ERROR_CODES`)
+- HTTP status codes (`STATUS_CODES`)
+- Human-readable messages (`MESSAGES`)
+- Queue names (`QUEUES`)
+- Job names (`JOBS`)
 - **No business logic or side effects**
 
 #### `packages/db` — Database Layer
@@ -163,6 +168,7 @@ ai-outreach-platform/
 
 - Abstract interface for email providers (SendGrid, etc.)
 - Exposes `emailProvider.send()` — the only entry point application code should call
+- Factory function `createEmailProvider(provider, config)` returns the correct provider instance
 - Handles provider-specific configuration (API keys, webhook verification)
 - **Allowed:** delivery/receive methods through the provider abstraction
 - **Not allowed:** direct provider SDK calls from application code
@@ -288,15 +294,14 @@ Example — `workspace-id.guard.ts`:
 // apps/api/src/guards/workspace-id.guard.ts
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { AppError } from '../errors/AppError';
-import { ERROR_CODES } from '../utils/error-codes';
-import { STATUS_CODES } from '../utils/status-codes';
-import { MESSAGES } from '../utils/messages';
+import { Request } from 'express';
+import { ERROR_CODES, MESSAGES, STATUS_CODES } from '@repo/shared';
 
 @Injectable()
 export class WorkspaceIdGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const workspaceId = request.headers['x-workspace-id'];
+    const request: Request & { workspaceId: string } = context.switchToHttp().getRequest();
+    const workspaceId = request.headers['x-workspace-id'] as string;
 
     if (!workspaceId) {
       throw new AppError(
@@ -341,13 +346,15 @@ In `apps/api`, always use the `AppError` class for throwing errors. Never use ra
 throw new AppError(code, statusCode, message);
 ```
 
-- `code` — a string constant from `apps/api/src/utils/error-codes.ts`
-- `statusCode` — a numeric HTTP status from `apps/api/src/utils/status-codes.ts`
-- `message` — a human-readable string from `apps/api/src/utils/messages.ts`
+- `code` — a string constant from `packages/shared/src/error-codes.ts` (imported as `ERROR_CODES` from `@repo/shared`)
+- `statusCode` — a numeric HTTP status from `packages/shared/src/status-codes.ts` (imported as `STATUS_CODES` from `@repo/shared`)
+- `message` — a human-readable string from `packages/shared/src/messages.ts` (imported as `MESSAGES` from `@repo/shared`)
 
 Example:
 
 ```ts
+import { ERROR_CODES, STATUS_CODES, MESSAGES } from '@repo/shared';
+
 throw new AppError(
   ERROR_CODES.SENDER_NOT_FOUND,
   STATUS_CODES.NOT_FOUND,
@@ -357,9 +364,10 @@ throw new AppError(
 
 When adding a new error:
 
-1. Add the code to `ERROR_CODES` in `apps/api/src/utils/error-codes.ts`
-2. Add the message to `MESSAGES.error` in `apps/api/src/utils/messages.ts`
-3. Use an existing `STATUS_CODES` value — no new status codes unless absolutely necessary
+1. Add the code to `ERROR_CODES` in `packages/shared/src/error-codes.ts`
+2. Add the message to `MESSAGES.error` in `packages/shared/src/messages.ts`
+3. Add a new HTTP status code to `STATUS_CODES` in `packages/shared/src/status-codes.ts` only if absolutely necessary — reuse existing values
+4. Re-export from `packages/shared/src/index.ts` if adding a new file
 
 ### Module Boundaries
 
@@ -414,6 +422,15 @@ Validate:
 before service execution.
 
 - Use Zod schemas from `packages/shared` for request validation
+- Schemas are organized into domain-specific files under `packages/shared/src/schemas/`:
+  - `auth.ts` — registration, login, OTP verification
+  - `contacts.ts` — contact CRUD and list queries
+  - `drafts.ts` — draft CRUD and send
+  - `messages.ts` — message queries
+  - `senders.ts` — sender CRUD and list queries
+  - `threads.ts` — thread queries and status updates
+  - `workspaces.ts` — workspace creation and invitations
+- All schemas are re-exported via `packages/shared/src/schemas/index.ts` (and transitively from `@repo/shared`)
 - Fail fast — invalid requests must not reach the service layer
 
 ---
@@ -478,18 +495,63 @@ Every BullMQ job must:
 - support retries
 - support duplicate execution
 
-Job names:
+### Queue and Job Names
 
-```text
-send-email
-process-reply
-process-tracking-event
-generate-follow-up
+Queue names are defined as constants in `packages/shared/src/queue-names.ts`:
+
+```ts
+// packages/shared/src/queue-names.ts
+export const QUEUES = {
+  EMAIL: 'email',
+} as const;
 ```
 
-- Job handlers are defined in `apps/worker`
-- Job enqueueing happens from services in `apps/api`
-- Use `kebab-case` for job names
+Job names are defined as constants in `packages/shared/src/job-names.ts`:
+
+```ts
+// packages/shared/src/job-names.ts
+export const JOBS = {
+  SEND_EMAIL: 'send-email',
+} as const;
+```
+
+Always reference queue and job names via these constants, never as raw strings:
+
+```ts
+import { JOBS, QUEUES } from '@repo/shared';
+
+// queue registration (worker)
+BullModule.registerQueue({ name: QUEUES.EMAIL });
+
+// job enqueue (api)
+await this.queue.add(JOBS.SEND_EMAIL, jobPayload);
+```
+
+### Queue Service Pattern
+
+Queue enqueuing in `apps/api` goes through a dedicated queue service:
+
+```ts
+// apps/api/src/modules/email-queue/email-queue.service.ts
+import { JOBS, QUEUES } from '@repo/shared';
+
+@Injectable()
+export class EmailQueueService {
+  private queue: Queue<SendEmailJob>;
+
+  constructor() {
+    this.queue = new Queue<SendEmailJob>(QUEUES.EMAIL, { connection: { ... } });
+  }
+
+  async enqueueSendEmail(job: SendEmailJob) {
+    await this.queue.add(JOBS.SEND_EMAIL, job);
+  }
+}
+```
+
+- Services in `apps/api` inject the queue service, never interact with BullMQ queues directly
+- Job handlers/processors are defined in `apps/worker`
+- Job payload types are defined in `packages/types/src/queue.ts`
 - Failed jobs must log structured context for debugging
 
 ---

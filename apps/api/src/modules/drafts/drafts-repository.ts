@@ -3,7 +3,7 @@ import { eq, and, sql } from 'drizzle-orm';
 import { v7 } from 'uuid';
 import { db } from '../../config/db';
 import { drafts } from '@repo/db';
-import type { DraftStatus } from '@repo/shared';
+import type { DraftStatus } from '@repo/types';
 import type { UpdateDraftInput } from '@repo/shared';
 
 @Injectable()
@@ -24,10 +24,7 @@ export class DraftsRepository {
   }
 
   async findById(id: string) {
-    const [draft] = await db
-      .select()
-      .from(drafts)
-      .where(eq(drafts.id, id));
+    const [draft] = await db.select().from(drafts).where(eq(drafts.id, id));
 
     return draft ?? null;
   }
@@ -36,9 +33,7 @@ export class DraftsRepository {
     workspaceId: string,
     filters: { status?: DraftStatus; page: number; pageSize: number },
   ) {
-    const conditions: ReturnType<typeof and>[] = [
-      eq(drafts.workspaceId, workspaceId),
-    ];
+    const conditions: ReturnType<typeof and>[] = [eq(drafts.workspaceId, workspaceId)];
 
     if (filters.status) {
       conditions.push(eq(drafts.status, filters.status));
@@ -81,31 +76,19 @@ export class DraftsRepository {
     if (input.senderId !== undefined) setData.senderId = input.senderId || null;
     if (input.status !== undefined) setData.status = input.status;
 
-    const [draft] = await db
-      .update(drafts)
-      .set(setData)
-      .where(eq(drafts.id, id))
-      .returning();
+    const [draft] = await db.update(drafts).set(setData).where(eq(drafts.id, id)).returning();
 
     return draft;
   }
 
   async updateStatus(id: string, status: DraftStatus) {
-    const [draft] = await db
-      .update(drafts)
-      .set({ status })
-      .where(eq(drafts.id, id))
-      .returning();
+    const [draft] = await db.update(drafts).set({ status }).where(eq(drafts.id, id)).returning();
 
     return draft;
   }
 
   async linkToThread(id: string, threadId: string) {
-    const [draft] = await db
-      .update(drafts)
-      .set({ threadId })
-      .where(eq(drafts.id, id))
-      .returning();
+    const [draft] = await db.update(drafts).set({ threadId }).where(eq(drafts.id, id)).returning();
 
     return draft;
   }

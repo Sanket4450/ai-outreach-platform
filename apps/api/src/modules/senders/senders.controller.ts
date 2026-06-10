@@ -13,11 +13,7 @@ import {
 import { SendersService } from './senders.service';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { WorkspaceIdGuard } from '../../guards/workspace-id.guard';
-import {
-  createSenderSchema,
-  updateSenderSchema,
-  listSendersQuerySchema,
-} from '@repo/shared';
+import { createSenderSchema, updateSenderSchema, listSendersQuerySchema } from '@repo/shared';
 import type { WorkspaceRequest } from '../../utils/types';
 
 @Controller('senders')

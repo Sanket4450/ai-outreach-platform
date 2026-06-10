@@ -3,7 +3,7 @@ import { eq, and, sql, isNull } from 'drizzle-orm';
 import { v7 } from 'uuid';
 import { db } from '../../config/db';
 import { messages } from '@repo/db';
-import type { MessageDirection, MessageStatus } from '@repo/shared';
+import type { MessageDirection, MessageStatus } from '@repo/types';
 
 @Injectable()
 export class MessagesRepository {
@@ -50,10 +50,7 @@ export class MessagesRepository {
     return message ?? null;
   }
 
-  async findManyByThreadId(
-    threadId: string,
-    filters: { page: number; pageSize: number },
-  ) {
+  async findManyByThreadId(threadId: string, filters: { page: number; pageSize: number }) {
     const conditions: ReturnType<typeof and>[] = [
       eq(messages.threadId, threadId),
       isNull(messages.deletedAt),
@@ -121,9 +118,7 @@ export class MessagesRepository {
     const [message] = await db
       .update(messages)
       .set({ firstOpenedAt })
-      .where(
-        and(eq(messages.id, id), isNull(messages.firstOpenedAt)),
-      )
+      .where(and(eq(messages.id, id), isNull(messages.firstOpenedAt)))
       .returning();
 
     return message;
@@ -133,9 +128,7 @@ export class MessagesRepository {
     const [message] = await db
       .update(messages)
       .set({ firstClickedAt })
-      .where(
-        and(eq(messages.id, id), isNull(messages.firstClickedAt)),
-      )
+      .where(and(eq(messages.id, id), isNull(messages.firstClickedAt)))
       .returning();
 
     return message;
@@ -145,6 +138,26 @@ export class MessagesRepository {
     const [message] = await db
       .update(messages)
       .set({ status: 'failed', bouncedAt })
+      .where(eq(messages.id, id))
+      .returning();
+
+    return message;
+  }
+
+  async setProviderMessageId(id: string, providerMessageId: string) {
+    const [message] = await db
+      .update(messages)
+      .set({ providerMessageId, status: 'sent', sentAt: new Date() })
+      .where(and(eq(messages.id, id), eq(messages.status, 'queued')))
+      .returning();
+
+    return message;
+  }
+
+  async markFailed(id: string) {
+    const [message] = await db
+      .update(messages)
+      .set({ status: 'failed' })
       .where(eq(messages.id, id))
       .returning();
 

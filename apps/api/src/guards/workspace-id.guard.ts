@@ -1,9 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { AppError } from '../errors/AppError';
-import { ERROR_CODES } from '../utils/error-codes';
-import { STATUS_CODES } from '../utils/status-codes';
-import { MESSAGES } from '../utils/messages';
 import { Request } from 'express';
+import { ERROR_CODES, MESSAGES, STATUS_CODES } from '@repo/shared';
 
 @Injectable()
 export class WorkspaceIdGuard implements CanActivate {

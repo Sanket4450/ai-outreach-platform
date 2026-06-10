@@ -4,18 +4,18 @@
 
 This document defines the complete end-to-end flow for:
 
-* Contact creation
-* Contact updates
-* Contact deletion
-* Contact listing
-* Contact retrieval
+- Contact creation
+- Contact updates
+- Contact deletion
+- Contact listing
+- Contact retrieval
 
 This document is the source of truth for:
 
-* Backend implementation
-* Frontend implementation
-* API design
-* Workspace data isolation
+- Backend implementation
+- Frontend implementation
+- API design
+- Workspace data isolation
 
 ---
 
@@ -27,9 +27,9 @@ A contact belongs to exactly one workspace.
 
 A contact may later be associated with:
 
-* Drafts
-* Threads
-* Messages
+- Drafts
+- Threads
+- Messages
 
 Contacts are created before outreach begins and serve as the primary recipient record within the system.
 
@@ -333,10 +333,10 @@ Every contact belongs to exactly one workspace.
 
 Workspace members can:
 
-* Create contacts
-* View contacts
-* Update contacts
-* Delete contacts
+- Create contacts
+- View contacts
+- Update contacts
+- Delete contacts
 
 Contacts are never shared across workspaces.
 

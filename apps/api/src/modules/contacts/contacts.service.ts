@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ContactsRepository } from './contacts-repository';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import type { CreateContactInput, UpdateContactInput, ListContactsQuery } from '@repo/shared';
+import {
+  type CreateContactInput,
+  type UpdateContactInput,
+  type ListContactsQuery,
+  ERROR_CODES,
+  STATUS_CODES,
+  MESSAGES,
+} from '@repo/shared';
 
 @Injectable()
 export class ContactsService {
@@ -69,7 +73,10 @@ export class ContactsService {
     }
 
     if (input.email && input.email !== contact.email) {
-      const emailConflict = await this.contactsRepository.findByEmailInWorkspace(workspaceId, input.email);
+      const emailConflict = await this.contactsRepository.findByEmailInWorkspace(
+        workspaceId,
+        input.email,
+      );
       if (emailConflict) {
         throw new AppError(
           ERROR_CODES.CONTACT_ALREADY_EXISTS,

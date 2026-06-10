@@ -5,18 +5,19 @@ import { randomInt } from 'node:crypto';
 import { AuthRepository } from './auth-repository';
 import { OtpRepository } from './otp-repository';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import { BCRYPT_ROUNDS, OTP_EXPIRY_MINUTES } from '../../utils/constants';
-import type {
-  CheckEmailInput,
-  RegisterUserInput,
-  VerifyEmailInput,
-  ResendVerificationEmailInput,
-  LoginInput,
+import {
+  type CheckEmailInput,
+  type RegisterUserInput,
+  type VerifyEmailInput,
+  type ResendVerificationEmailInput,
+  type LoginInput,
+  ERROR_CODES,
+  STATUS_CODES,
+  MESSAGES,
+  OTP_EXPIRY_MINUTES,
+  BCRYPT_ROUNDS,
 } from '@repo/shared';
-import { env } from 'src/config/env';
+import { env } from '@/config/env';
 
 @Injectable()
 export class AuthService {

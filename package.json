@@ -10,7 +10,7 @@
     "dev:api": "turbo run dev --filter=./apps/api",
     "dev:worker": "turbo run dev --filter=./apps/worker",
     "build": "turbo run build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "turbo run typecheck",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
   },

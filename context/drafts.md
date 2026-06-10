@@ -4,21 +4,21 @@
 
 This document defines the complete end-to-end flow for:
 
-* Draft creation
-* Draft retrieval
-* Draft updates
-* Draft deletion
-* Draft composition
-* Draft lifecycle management
-* Draft sending
-* Thread and message creation from drafts
+- Draft creation
+- Draft retrieval
+- Draft updates
+- Draft deletion
+- Draft composition
+- Draft lifecycle management
+- Draft sending
+- Thread and message creation from drafts
 
 This document is the source of truth for:
 
-* Backend implementation
-* Frontend implementation
-* API design
-* Email composition workflow
+- Backend implementation
+- Frontend implementation
+- API design
+- Email composition workflow
 
 ---
 
@@ -679,11 +679,11 @@ Every draft belongs to exactly one workspace.
 
 Workspace members can:
 
-* Create drafts
-* View drafts
-* Update drafts
-* Delete drafts
-* Send drafts
+- Create drafts
+- View drafts
+- Update drafts
+- Delete drafts
+- Send drafts
 
 Drafts are never shared across workspaces.
 

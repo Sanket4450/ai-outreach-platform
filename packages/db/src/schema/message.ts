@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { MESSAGE_DIRECTIONS } from '@repo/shared';
+import { MESSAGE_DIRECTIONS } from '@repo/types';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
@@ -88,4 +88,3 @@ export const messagesRelations = relations(messages, ({ one, many }) => ({
   }),
   webhookEvents: many(webhookEvents),
 }));
-

@@ -1,10 +1,9 @@
-
- import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { eq, and, sql } from 'drizzle-orm';
 import { v7 } from 'uuid';
 import { db } from '../../config/db';
 import { threads } from '@repo/db';
-import type { ThreadStatus } from '@repo/shared';
+import type { ThreadStatus } from '@repo/types';
 
 @Injectable()
 export class ThreadsRepository {
@@ -29,10 +28,7 @@ export class ThreadsRepository {
   }
 
   async findById(id: string) {
-    const [thread] = await db
-      .select()
-      .from(threads)
-      .where(eq(threads.id, id));
+    const [thread] = await db.select().from(threads).where(eq(threads.id, id));
 
     return thread ?? null;
   }
@@ -91,11 +87,7 @@ export class ThreadsRepository {
   }
 
   async updateStatus(id: string, status: ThreadStatus) {
-    const [thread] = await db
-      .update(threads)
-      .set({ status })
-      .where(eq(threads.id, id))
-      .returning();
+    const [thread] = await db.update(threads).set({ status }).where(eq(threads.id, id)).returning();
 
     return thread;
   }

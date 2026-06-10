@@ -11,7 +11,16 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { DraftsModule } from './modules/drafts/drafts.module';
 
 @Module({
-  imports: [AuthModule, WorkspacesModule, WorkspaceInvitationsModule, ContactsModule, SendersModule, ThreadsModule, MessagesModule, DraftsModule],
+  imports: [
+    AuthModule,
+    WorkspacesModule,
+    WorkspaceInvitationsModule,
+    ContactsModule,
+    SendersModule,
+    ThreadsModule,
+    MessagesModule,
+    DraftsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

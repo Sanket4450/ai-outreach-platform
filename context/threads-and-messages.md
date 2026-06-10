@@ -4,21 +4,21 @@
 
 This document defines the complete end-to-end flow for:
 
-* Thread creation
-* Thread retrieval
-* Thread state management
-* Message creation
-* Message retrieval
-* Conversation history
-* Inbound communication
-* Outbound communication
+- Thread creation
+- Thread retrieval
+- Thread state management
+- Message creation
+- Message retrieval
+- Conversation history
+- Inbound communication
+- Outbound communication
 
 This document is the source of truth for:
 
-* Backend implementation
-* Frontend implementation
-* API design
-* Conversation lifecycle management
+- Backend implementation
+- Frontend implementation
+- API design
+- Conversation lifecycle management
 
 ---
 
@@ -774,11 +774,11 @@ Every message belongs to exactly one workspace.
 
 Workspace members can:
 
-* View threads
-* View messages
-* Create messages
-* Close threads
-* Reopen threads
+- View threads
+- View messages
+- Create messages
+- Close threads
+- Reopen threads
 
 Threads and messages are never shared across workspaces.
 

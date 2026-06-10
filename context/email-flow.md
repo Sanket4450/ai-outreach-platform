@@ -4,21 +4,21 @@
 
 This document defines the complete end-to-end flow for:
 
-* Email sending
-* Email delivery processing
-* Email provider abstraction
-* SendGrid integration
-* Queue processing
-* Worker processing
-* Message delivery state management
+- Email sending
+- Email delivery processing
+- Email provider abstraction
+- SendGrid integration
+- Queue processing
+- Worker processing
+- Message delivery state management
 
 This document is the source of truth for:
 
-* Backend implementation
-* Worker implementation
-* Email provider implementation
-* Queue implementation
-* Frontend behavior
+- Backend implementation
+- Worker implementation
+- Email provider implementation
+- Queue implementation
+- Frontend behavior
 
 ---
 
@@ -194,13 +194,13 @@ Email Provider Abstraction
 Application code only accesses:
 
 ```ts
-emailProvider.send()
+emailProvider.send();
 ```
 
 Application code never accesses:
 
 ```ts
-sendgrid.send()
+sendgrid.send();
 ```
 
 directly.
@@ -566,13 +566,13 @@ Message
 Worker calls:
 
 ```ts
-emailProvider.send()
+emailProvider.send();
 ```
 
 The worker never calls:
 
 ```ts
-sendgrid.send()
+sendgrid.send();
 ```
 
 directly.

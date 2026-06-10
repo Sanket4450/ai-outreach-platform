@@ -27,10 +27,7 @@ export class ContactsRepository {
   }
 
   async findById(id: string) {
-    const [contact] = await db
-      .select()
-      .from(contacts)
-      .where(eq(contacts.id, id));
+    const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
 
     return contact ?? null;
   }
@@ -49,16 +46,17 @@ export class ContactsRepository {
       .select()
       .from(contacts)
       .where(
-        and(eq(contacts.workspaceId, workspaceId), eq(contacts.email, email), isNull(contacts.deletedAt)),
+        and(
+          eq(contacts.workspaceId, workspaceId),
+          eq(contacts.email, email),
+          isNull(contacts.deletedAt),
+        ),
       );
 
     return contact ?? null;
   }
 
-  async findManyByWorkspace(
-    workspaceId: string,
-    query: ListContactsQuery,
-  ) {
+  async findManyByWorkspace(workspaceId: string, query: ListContactsQuery) {
     const conditions: ReturnType<typeof and>[] = [
       eq(contacts.workspaceId, workspaceId),
       isNull(contacts.deletedAt),
@@ -115,11 +113,7 @@ export class ContactsRepository {
     if (input.linkedinUrl !== undefined) setData.linkedinUrl = input.linkedinUrl || null;
     if (input.notes !== undefined) setData.notes = input.notes;
 
-    const [contact] = await db
-      .update(contacts)
-      .set(setData)
-      .where(eq(contacts.id, id))
-      .returning();
+    const [contact] = await db.update(contacts).set(setData).where(eq(contacts.id, id)).returning();
 
     return contact;
   }

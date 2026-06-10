@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ThreadsRepository } from './threads-repository';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import type { ThreadStatus } from '@repo/shared';
+import type { ThreadStatus } from '@repo/types';
+import { ERROR_CODES, MESSAGES, STATUS_CODES } from '@repo/shared';
 
 @Injectable()
 export class ThreadsService {
@@ -39,11 +37,7 @@ export class ThreadsService {
     return thread;
   }
 
-  async findOrCreateThread(
-    workspaceId: string,
-    contactId: string,
-    senderId: string,
-  ) {
+  async findOrCreateThread(workspaceId: string, contactId: string, senderId: string) {
     const existing = await this.threadsRepository.findExistingThread(
       workspaceId,
       contactId,

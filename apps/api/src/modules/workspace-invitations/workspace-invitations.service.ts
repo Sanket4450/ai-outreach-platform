@@ -6,11 +6,16 @@ import { WorkspaceInvitationsRepository } from './workspace-invitations-reposito
 import { AuthRepository } from '../auth/auth-repository';
 import { WorkspacesRepository } from '../workspaces/workspaces-repository';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import { BCRYPT_ROUNDS, INVITATION_EXPIRY_DAYS } from '../../utils/constants';
-import type { CreateInvitationInput, RegisterFromInvitationInput } from '@repo/shared';
+import {
+  BCRYPT_ROUNDS,
+  ERROR_CODES,
+  INVITATION_EXPIRY_DAYS,
+  MESSAGES,
+  STATUS_CODES,
+  type CreateInvitationInput,
+  type RegisterFromInvitationInput,
+} from '@repo/shared';
+import { env } from '@/config/env';
 
 @Injectable()
 export class WorkspaceInvitationsService {
@@ -168,8 +173,8 @@ export class WorkspaceInvitationsService {
     return {
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '7d',
-        secret: process.env['REFRESH_TOKEN_SECRET'],
+        expiresIn: env.REFRESH_TOKEN_EXPIRES_IN as never,
+        secret: env.REFRESH_TOKEN_SECRET,
       }),
     };
   }

@@ -4,18 +4,18 @@
 
 This document defines the complete end-to-end flow for:
 
-* Sender creation
-* Sender updates
-* Sender deletion
-* Sender listing
-* Sender retrieval
+- Sender creation
+- Sender updates
+- Sender deletion
+- Sender listing
+- Sender retrieval
 
 This document is the source of truth for:
 
-* Backend implementation
-* Frontend implementation
-* API design
-* Sender ownership and usage
+- Backend implementation
+- Frontend implementation
+- API design
+- Sender ownership and usage
 
 ---
 
@@ -35,9 +35,9 @@ A sender belongs to exactly one workspace.
 
 Senders are later used by:
 
-* Drafts
-* Threads
-* Messages
+- Drafts
+- Threads
+- Messages
 
 A sender must exist before outbound communication can occur.
 
@@ -274,10 +274,10 @@ Every sender belongs to exactly one workspace.
 
 Workspace members can:
 
-* Create senders
-* View senders
-* Update senders
-* Delete senders
+- Create senders
+- View senders
+- Update senders
+- Delete senders
 
 Senders are never shared across workspaces.
 

@@ -1,4 +1,4 @@
-export const WORKSPACE_ROLES = ['owner', 'member'] as const;
+const WORKSPACE_ROLES = ['owner', 'member'] as const;
 export const THREAD_STATUSES = ['waiting_reply', 'needs_action', 'closed'] as const;
 export const MESSAGE_DIRECTIONS = ['inbound', 'outbound'] as const;
 export const MESSAGE_STATUSES = ['scheduled', 'queued', 'sent', 'failed'] as const;

@@ -392,49 +392,49 @@
 
 ## Relationships Summary
 
-| From                  | To                   | Type   | ON DELETE                    |
-| --------------------- | -------------------- | ------ | ---------------------------- |
-| users                 | workspace_members    | 1 → \* | CASCADE (via userId FK)      |
-| users                 | workspace_invitations| 1 → \* | RESTRICT (via createdBy FK)  |
-| workspaces            | workspace_members    | 1 → \* | CASCADE                      |
-| workspaces            | workspace_invitations| 1 → \* | CASCADE                      |
-| workspaces            | contacts             | 1 → \* | CASCADE                      |
-| workspaces            | senders              | 1 → \* | CASCADE                      |
-| workspaces            | threads              | 1 → \* | CASCADE                      |
-| workspaces            | messages             | 1 → \* | CASCADE                      |
-| workspaces            | drafts               | 1 → \* | CASCADE                      |
-| workspaces            | webhook_events       | 1 → \* | CASCADE                      |
-| workspace_members     | users                | \* → 1 | —                            |
-| workspace_members     | workspaces           | \* → 1 | —                            |
-| workspace_invitations | workspaces           | \* → 1 | —                            |
-| workspace_invitations | users                | \* → 1 | —                            |
-| contacts              | threads              | 1 → \* | RESTRICT                     |
-| contacts              | drafts               | 1 → \* | CASCADE                      |
-| senders               | threads              | 1 → \* | RESTRICT                     |
-| senders               | drafts               | 1 → \* | RESTRICT                     |
-| threads               | messages             | 1 → \* | CASCADE                      |
-| threads               | drafts               | 1 → \* | SET NULL                     |
-| messages              | webhook_events       | 1 → \* | CASCADE                      |
+| From                  | To                    | Type   | ON DELETE                   |
+| --------------------- | --------------------- | ------ | --------------------------- |
+| users                 | workspace_members     | 1 → \* | CASCADE (via userId FK)     |
+| users                 | workspace_invitations | 1 → \* | RESTRICT (via createdBy FK) |
+| workspaces            | workspace_members     | 1 → \* | CASCADE                     |
+| workspaces            | workspace_invitations | 1 → \* | CASCADE                     |
+| workspaces            | contacts              | 1 → \* | CASCADE                     |
+| workspaces            | senders               | 1 → \* | CASCADE                     |
+| workspaces            | threads               | 1 → \* | CASCADE                     |
+| workspaces            | messages              | 1 → \* | CASCADE                     |
+| workspaces            | drafts                | 1 → \* | CASCADE                     |
+| workspaces            | webhook_events        | 1 → \* | CASCADE                     |
+| workspace_members     | users                 | \* → 1 | —                           |
+| workspace_members     | workspaces            | \* → 1 | —                           |
+| workspace_invitations | workspaces            | \* → 1 | —                           |
+| workspace_invitations | users                 | \* → 1 | —                           |
+| contacts              | threads               | 1 → \* | RESTRICT                    |
+| contacts              | drafts                | 1 → \* | CASCADE                     |
+| senders               | threads               | 1 → \* | RESTRICT                    |
+| senders               | drafts                | 1 → \* | RESTRICT                    |
+| threads               | messages              | 1 → \* | CASCADE                     |
+| threads               | drafts                | 1 → \* | SET NULL                    |
+| messages              | webhook_events        | 1 → \* | CASCADE                     |
 
 ---
 
 ## Indexes
 
-| Table                 | Index Name                                      | Columns                               |
-| --------------------- | ----------------------------------------------- | ------------------------------------- |
-| contacts              | contacts_workspace_id_idx                       | workspaceId                           |
-| contacts              | contacts_workspace_id_email_uq                  | workspaceId, email (Unique)           |
-| messages              | messages_thread_id_created_at_idx               | threadId, createdAt                   |
-| messages              | messages_status_idx                             | status                                |
-| messages              | messages_status_scheduled_for_idx               | status, scheduledFor                  |
-| senders               | senders_workspace_id_idx                        | workspaceId                           |
-| senders               | senders_workspace_id_provider_email_uq          | workspaceId, provider, email (Unique) |
-| threads               | threads_workspace_id_last_message_at_idx        | workspaceId, lastMessageAt            |
-| threads               | threads_workspace_id_status_idx                 | workspaceId, status                   |
-| webhook_events        | webhook_events_message_id_idx                   | messageId                             |
-| webhook_events        | webhook_events_workspace_id_idx                 | workspaceId                           |
-| webhook_events        | webhook_events_message_id_occurred_at_idx       | messageId, occurredAt                 |
-| workspace_invitations | workspace_invitations_workspace_id_email_idx    | workspaceId, email                    |
-| workspace_members     | workspace_members_workspace_id_idx              | workspaceId                           |
-| workspace_members     | workspace_members_user_id_idx                   | userId                                |
-| workspace_members     | workspace_members_workspace_id_user_id_uq       | workspaceId, userId (Unique)          |
+| Table                 | Index Name                                   | Columns                               |
+| --------------------- | -------------------------------------------- | ------------------------------------- |
+| contacts              | contacts_workspace_id_idx                    | workspaceId                           |
+| contacts              | contacts_workspace_id_email_uq               | workspaceId, email (Unique)           |
+| messages              | messages_thread_id_created_at_idx            | threadId, createdAt                   |
+| messages              | messages_status_idx                          | status                                |
+| messages              | messages_status_scheduled_for_idx            | status, scheduledFor                  |
+| senders               | senders_workspace_id_idx                     | workspaceId                           |
+| senders               | senders_workspace_id_provider_email_uq       | workspaceId, provider, email (Unique) |
+| threads               | threads_workspace_id_last_message_at_idx     | workspaceId, lastMessageAt            |
+| threads               | threads_workspace_id_status_idx              | workspaceId, status                   |
+| webhook_events        | webhook_events_message_id_idx                | messageId                             |
+| webhook_events        | webhook_events_workspace_id_idx              | workspaceId                           |
+| webhook_events        | webhook_events_message_id_occurred_at_idx    | messageId, occurredAt                 |
+| workspace_invitations | workspace_invitations_workspace_id_email_idx | workspaceId, email                    |
+| workspace_members     | workspace_members_workspace_id_idx           | workspaceId                           |
+| workspace_members     | workspace_members_user_id_idx                | userId                                |
+| workspace_members     | workspace_members_workspace_id_user_id_uq    | workspaceId, userId (Unique)          |

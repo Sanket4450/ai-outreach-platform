@@ -26,10 +26,7 @@ export const workspaceMembers = pgTable(
   (table) => [
     index('workspace_members_workspace_id_idx').on(table.workspaceId),
     index('workspace_members_user_id_idx').on(table.userId),
-    uniqueIndex('workspace_members_workspace_id_user_id_uq').on(
-      table.workspaceId,
-      table.userId,
-    ),
+    uniqueIndex('workspace_members_workspace_id_user_id_uq').on(table.workspaceId, table.userId),
   ],
 );
 
@@ -43,4 +40,3 @@ export const workspaceMembersRelations = relations(workspaceMembers, ({ one }) =
     references: [users.id],
   }),
 }));
-

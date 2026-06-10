@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { MessagesRepository } from './messages-repository';
 import { ThreadsService } from '../threads/threads.service';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import type { CreateMessageInput, ListMessagesQuery } from '@repo/shared';
+import {
+  ERROR_CODES,
+  MESSAGES,
+  STATUS_CODES,
+  type CreateMessageInput,
+  type ListMessagesQuery,
+} from '@repo/shared';
 
 @Injectable()
 export class MessagesService {

@@ -44,4 +44,3 @@ export const sendersRelations = relations(senders, ({ one, many }) => ({
   threads: many(threads),
   drafts: many(drafts),
 }));
-

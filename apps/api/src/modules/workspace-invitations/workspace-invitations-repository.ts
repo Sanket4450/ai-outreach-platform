@@ -3,7 +3,7 @@ import { eq, and, gt, isNull } from 'drizzle-orm';
 import { v7 } from 'uuid';
 import { db } from '../../config/db';
 import { workspaceInvitations, workspaceMembers } from '@repo/db';
-import type { WorkspaceRole } from '@repo/shared';
+import type { WorkspaceRole } from '@repo/types';
 
 @Injectable()
 export class WorkspaceInvitationsRepository {

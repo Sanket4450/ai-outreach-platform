@@ -3,7 +3,7 @@ import { relations } from 'drizzle-orm';
 
 import { idField } from './common/id';
 import { timestampFields } from './common/timestampts';
-import { WEBHOOK_EVENT_TYPES } from '@repo/shared';
+import { WEBHOOK_EVENT_TYPES } from '@repo/types';
 import { workspaces } from './workspace';
 import { messages } from './message';
 
@@ -51,4 +51,3 @@ export const webhookEventsRelations = relations(webhookEvents, ({ one }) => ({
     references: [messages.id],
   }),
 }));
-

@@ -4,11 +4,15 @@ import { MessagesService } from '../messages/messages.service';
 import { ThreadsService } from '../threads/threads.service';
 import { ContactsService } from '../contacts/contacts.service';
 import { SendersService } from '../senders/senders.service';
+import { EmailQueueService } from '../email-queue/email-queue.service';
 import { AppError } from '../../errors/AppError';
-import { ERROR_CODES } from '../../utils/error-codes';
-import { STATUS_CODES } from '../../utils/status-codes';
-import { MESSAGES } from '../../utils/messages';
-import type { UpdateDraftInput, ListDraftsQuery } from '@repo/shared';
+import {
+  type UpdateDraftInput,
+  type ListDraftsQuery,
+  ERROR_CODES,
+  STATUS_CODES,
+  MESSAGES,
+} from '@repo/shared';
 
 @Injectable()
 export class DraftsService {
@@ -18,6 +22,7 @@ export class DraftsService {
     private readonly threadsService: ThreadsService,
     private readonly contactsService: ContactsService,
     private readonly sendersService: SendersService,
+    private readonly emailQueueService: EmailQueueService,
   ) {}
 
   async createDraft(workspaceId: string) {
@@ -165,14 +170,10 @@ export class DraftsService {
     const sender = await this.sendersService.getSender(draft.senderId, workspaceId);
 
     // Find or create thread via threadsService
-    const thread = await this.threadsService.findOrCreateThread(
-      workspaceId,
-      contact.id,
-      sender.id,
-    );
+    const thread = await this.threadsService.findOrCreateThread(workspaceId, contact.id, sender.id);
 
     // Create outbound message via messagesService (also updates thread lastMessageAt)
-    await this.messagesService.createOutboundMessage(
+    const message = await this.messagesService.createOutboundMessage(
       {
         threadId: thread.id,
         subject: draft.subject,
@@ -192,6 +193,12 @@ export class DraftsService {
 
     // Link draft to thread
     await this.draftsRepository.linkToThread(id, thread.id);
+
+    // Enqueue email delivery job
+    await this.emailQueueService.enqueueSendEmail({
+      workspaceId,
+      messageId: message.id,
+    });
 
     // Mark draft as sent
     return this.draftsRepository.updateStatus(id, 'sent');

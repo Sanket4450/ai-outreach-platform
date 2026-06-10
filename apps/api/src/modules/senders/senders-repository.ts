@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { eq, and, or, like, sql, ne } from 'drizzle-orm';
 import { v7 } from 'uuid';
-import { db } from '../../config/db';
+import { db } from '@/config/db';
 import { senders, threads } from '@repo/db';
 import type { CreateSenderInput, UpdateSenderInput, ListSendersQuery } from '@repo/shared';
 
@@ -24,19 +24,12 @@ export class SendersRepository {
   }
 
   async findById(id: string) {
-    const [sender] = await db
-      .select()
-      .from(senders)
-      .where(eq(senders.id, id));
+    const [sender] = await db.select().from(senders).where(eq(senders.id, id));
 
     return sender ?? null;
   }
 
-  async findByEmailAndProviderInWorkspace(
-    workspaceId: string,
-    email: string,
-    provider: string,
-  ) {
+  async findByEmailAndProviderInWorkspace(workspaceId: string, email: string, provider: string) {
     const [sender] = await db
       .select()
       .from(senders)
@@ -51,13 +44,8 @@ export class SendersRepository {
     return sender ?? null;
   }
 
-  async findManyByWorkspace(
-    workspaceId: string,
-    query: ListSendersQuery,
-  ) {
-    const conditions: ReturnType<typeof and>[] = [
-      eq(senders.workspaceId, workspaceId),
-    ];
+  async findManyByWorkspace(workspaceId: string, query: ListSendersQuery) {
+    const conditions: ReturnType<typeof and>[] = [eq(senders.workspaceId, workspaceId)];
 
     if (query.search) {
       const searchTerm = `%${query.search}%`;
@@ -106,20 +94,13 @@ export class SendersRepository {
     if (input.provider !== undefined) setData.provider = input.provider;
     if (input.providerConfig !== undefined) setData.providerConfig = input.providerConfig;
 
-    const [sender] = await db
-      .update(senders)
-      .set(setData)
-      .where(eq(senders.id, id))
-      .returning();
+    const [sender] = await db.update(senders).set(setData).where(eq(senders.id, id)).returning();
 
     return sender;
   }
 
   async deleteById(id: string) {
-    const [sender] = await db
-      .delete(senders)
-      .where(eq(senders.id, id))
-      .returning();
+    const [sender] = await db.delete(senders).where(eq(senders.id, id)).returning();
 
     return sender;
   }
@@ -128,12 +109,7 @@ export class SendersRepository {
     const [row] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(threads)
-      .where(
-        and(
-          eq(threads.senderId, senderId),
-          ne(threads.status, 'closed'),
-        ),
-      );
+      .where(and(eq(threads.senderId, senderId), ne(threads.status, 'closed')));
 
     return (row?.count ?? 0) > 0;
   }

@@ -35,10 +35,7 @@ export const threads = pgTable(
     ...timestampFields,
   },
   (table) => [
-    index('threads_workspace_id_last_message_at_idx').on(
-      table.workspaceId,
-      table.lastMessageAt,
-    ),
+    index('threads_workspace_id_last_message_at_idx').on(table.workspaceId, table.lastMessageAt),
     index('threads_workspace_id_status_idx').on(table.workspaceId, table.status),
   ],
 );
@@ -59,4 +56,3 @@ export const threadsRelations = relations(threads, ({ one, many }) => ({
   messages: many(messages),
   drafts: many(drafts),
 }));
-
