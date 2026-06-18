@@ -253,3 +253,8 @@ AI generates suggestions and content but does not make communication decisions o
 ### Clear Module Boundaries
 
 Each module owns a single responsibility and should not contain unrelated business logic.
+
+### Future features
+
+Target discovery, hiring signals, founder intelligence, personalization, and opportunity tracking.
+The navigation system that tells users who to contact, why now, and what to say. 🚀
